@@ -1,0 +1,7 @@
+bin
+target
+ctwitter-frontend/build
+ctwitter-frontend/test
+ctwitter-backend/.mvn
+
+
