@@ -1,12 +1,15 @@
 package org.collectiveone.ctwitterapi.controllers;
 
+import org.collectiveone.ctwitterapi.model.Account;
+import org.collectiveone.ctwitterapi.model.AccountState;
+import org.collectiveone.ctwitterapi.repositories.AccountRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.social.oauth1.AuthorizedRequestToken;
 import org.springframework.social.oauth1.OAuth1Operations;
 import org.springframework.social.oauth1.OAuth1Parameters;
 import org.springframework.social.oauth1.OAuthToken;
-import org.springframework.social.twitter.api.impl.TwitterTemplate;
 import org.springframework.social.twitter.connect.TwitterConnectionFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -14,21 +17,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
-/**
- * A demo controller for twitter API intergration. For simplicity I have saved the token into System properties.
- * You might want to persist them in a database mapped to individual user.
- * @author dhrubajyotib
- *
- */
-@RequestMapping("twitter")
+@RequestMapping("1/account/auth")
 @RestController
-public class TwitterHandleController {
+public class TwitterAuthorization {
 
     @Value("${twitter.consumer.key}")
     String consumerKey;
 
     @Value("${twitter.consumer.key.secret}")
     String consumerSecret;
+    
+    @Autowired
+    AccountRepository accountRepository;
 
     
     /**
@@ -38,17 +38,22 @@ public class TwitterHandleController {
      * <em>/twitter/access/token</em>
      * @return
      */
-    @RequestMapping(path = "authorise/url", method = RequestMethod.GET, produces = { MediaType.TEXT_HTML_VALUE })
+    @RequestMapping(path = "url", method = RequestMethod.GET, produces = { MediaType.TEXT_HTML_VALUE })
     public String requestToken() {
         //The call back URL
-        String callBackUrl="http://127.0.0.1:8080/twitter/access/token";
+        String callBackUrl="http://127.0.0.1:8080/1/account/auth/getToken";
         TwitterConnectionFactory connectionFactory = new TwitterConnectionFactory(consumerKey, consumerSecret);
         OAuth1Operations oauthOperations = connectionFactory.getOAuthOperations();
         OAuthToken requestToken = oauthOperations.fetchRequestToken(callBackUrl, null);
         String authorizeUrl = oauthOperations.buildAuthorizeUrl(requestToken.getValue(), OAuth1Parameters.NONE);
+        
+        Account account = new Account();
+        account.setState(AccountState.PENDINGAUTHORIZATION);
+        account.setRequestToken(requestToken.getValue());
+        account.setRequestTokenSecret(requestToken.getSecret());
 
-        System.setProperty("requestToken", requestToken.getValue());// Store them in database
-        System.setProperty("requestTokenSecret", requestToken.getSecret());// Store them in database
+        accountRepository.save(account);
+        
         return authorizeUrl;
 
     }
@@ -62,35 +67,23 @@ public class TwitterHandleController {
      * @param verifier
      * @return
      */
-    @RequestMapping(path = "access/token", method = RequestMethod.GET, produces = { MediaType.TEXT_HTML_VALUE })
+    @RequestMapping(path = "getToken", method = RequestMethod.GET, produces = { MediaType.TEXT_HTML_VALUE })
     public String getAccessToken(@RequestParam(value = "oauth_token") String oauthToken, @RequestParam(value = "oauth_verifier") String verifier) {
 
-        System.out.println(System.getProperty("requestToken"));
-        System.out.println(System.getProperty("requestTokenSecret"));
+    	Account account = accountRepository.findByRequestToken(oauthToken);
+    	
         TwitterConnectionFactory connectionFactory = new TwitterConnectionFactory(consumerKey, consumerSecret);
         OAuth1Operations oauthOperations = connectionFactory.getOAuthOperations();
-        OAuthToken oToken = new OAuthToken(System.getProperty("requestToken"), System.getProperty("requestTokenSecret"));
+        OAuthToken oToken = new OAuthToken(account.getRequestToken(), account.getAccessTokenSecret());
         OAuthToken accessToken = oauthOperations.exchangeForAccessToken(new AuthorizedRequestToken(oToken, verifier), null);
 
-        System.setProperty("accessToken", accessToken.getValue());// Store them in database
-        System.setProperty("accessTokenSecret", accessToken.getSecret());// Store them in database
+        account.setAccessToken(accessToken.getValue());
+        account.setAccessTokenSecret(accessToken.getSecret());
+        
+        accountRepository.save(account);
+
         return "Success";
     }
 
-    
-    /**
-     * A simple api to tweet.
-     * @return
-     */
-    @RequestMapping(path = "tweet", method = RequestMethod.GET, produces = { MediaType.TEXT_HTML_VALUE })
-    public String tweet() {
-
-        TwitterTemplate twitterTemplate = new TwitterTemplate(consumerKey, consumerSecret, System.getProperty("accessToken"), System.getProperty("accessTokenSecret"));
-
-        twitterTemplate.timelineOperations()
-            .updateStatus("hello");
-        return "done";
-
-    }
 
 }

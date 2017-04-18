@@ -27,11 +27,12 @@
       </div>
 
       <div class="col-md-9 col-lg-10">
-
         <div class="jumbotron">
-          <h3>Collective Tweet</h3>
-          <p>Create new one</p>
+          <button @click="createNewAccount()" class="btn btn-primary">Create new one</button>
         </div>
+        <textarea class="form-control" v-model="tweet" placeholder="tweet from here"></textarea>
+        <br>
+        <button class="btn btn-primary" @click="sendTweet()">Tweet</button>
 
       </div>
 
@@ -43,9 +44,25 @@
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  data () {
+    return {
+      tweet: ''
+    }
+  },
+
   methods: {
     ...mapGetters(['profileImage']),
-    ...mapActions(['logout'])
+    ...mapActions(['logout']),
+
+    createNewAccount () {
+      this.axios.get('/1/account/auth/url', {}).then((response) => {
+        window.location.replace(response.data)
+      })
+    },
+
+    sendTweet () {
+      this.axios.post('/1/account/action/2/tweet', { text: this.tweet })
+    }
   }
 }
 </script>
