@@ -27,13 +27,25 @@
       </div>
 
       <div class="col-md-9 col-lg-10">
-        <div class="jumbotron">
-          <button @click="createNewAccount()" class="btn btn-primary">Create new one</button>
-        </div>
+        <br>
+        <button @click="createNewAccount()" class="btn btn-primary">Link new one</button>
+        <br>
+        <br>
         <textarea class="form-control" v-model="tweet" placeholder="tweet from here"></textarea>
         <br>
+        <div v-if="showSentSuccess" class="alert alert-info">
+          Tweet sent
+        </div>
+        <div v-if="showSentError" class="alert alert-danger">
+          Error while sending tweet
+        </div>
         <button class="btn btn-primary" @click="sendTweet()">Tweet</button>
-
+        <br>
+        <br>
+        <button class="btn btn-primary" @click="getRecentTweets()">Get Recent Tweets</button>
+        <div v-for="tweet in recentTweets" >
+          - {{ tweet.text}}
+        </div>
       </div>
 
     </div>
@@ -46,7 +58,10 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data () {
     return {
-      tweet: ''
+      tweet: '',
+      recentTweets: {},
+      showSentSuccess: false,
+      showSentError: false
     }
   },
 
@@ -56,12 +71,34 @@ export default {
 
     createNewAccount () {
       this.axios.get('/1/account/auth/url', {}).then((response) => {
-        window.location.replace(response.data)
+        var newwindow = window.open(response.data, 'Link twitter account', 'left=300,height=200,width=400')
+        if (window.focus) {
+          newwindow.focus()
+        }
       })
     },
 
     sendTweet () {
-      this.axios.post('/1/account/action/2/tweet', { text: this.tweet })
+      this.axios.post('/1/secure/account/1/tweet', { text: this.tweet }, {
+        headers: {'Authorization': 'Bearer i3MISgXFYus6qyJA'}
+      })
+        .catch((data) => {
+          this.showSentError = true
+        })
+        .then((response) => {
+          if (response.data === 'done') {
+            this.tweet = ''
+            this.showSentSuccess = true
+          } else {
+            this.showSentError = true
+          }
+        })
+    },
+
+    getRecentTweets () {
+      this.axios.get('/1/secure/account/1/recentTweets').then((response) => {
+        this.recentTweets = response.data
+      })
     }
   }
 }

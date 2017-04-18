@@ -2,7 +2,6 @@ package org.collectiveone.ctwitterapi.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -24,7 +23,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         JwtWebSecurityConfigurer.forRS256(audience, issuer)
                 .configure(http)
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/secure/**").fullyAuthenticated();
+                .antMatchers("/1/secure/**").fullyAuthenticated();
         //                .antMatchers(HttpMethod.GET, "/secure/**").hasAuthority("read:greeting");
     }
 }

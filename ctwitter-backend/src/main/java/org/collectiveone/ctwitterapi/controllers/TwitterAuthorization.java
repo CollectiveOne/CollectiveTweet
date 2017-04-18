@@ -79,6 +79,7 @@ public class TwitterAuthorization {
 
         account.setAccessToken(accessToken.getValue());
         account.setAccessTokenSecret(accessToken.getSecret());
+        account.setState(AccountState.AUTHORIZED);
         
         accountRepository.save(account);
 
