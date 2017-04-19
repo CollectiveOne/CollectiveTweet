@@ -16,6 +16,13 @@ const getters = {
     } else {
       return ''
     }
+  },
+  userNickname: state => {
+    if (state.profile) {
+      return state.profile.nickname
+    } else {
+      return ''
+    }
   }
 }
 
@@ -32,7 +39,7 @@ const actions = {
   updateAuthenticated: ({ commit }) => {
     commit('authenticate', !!localStorage.getItem('id_token'))
     // TODO: call action (updateProfile) within action (updateAuthenticated)
-    lock.getProfile(localStorage.getItem('id_token'), (error, profile) => {
+    lock.getUserInfo(localStorage.getItem('access_token'), (error, profile) => {
       if (error) {
         return
       }
@@ -41,7 +48,7 @@ const actions = {
   },
 
   updateProfile: ({ commit }) => {
-    lock.getProfile(localStorage.getItem('id_token'), (error, profile) => {
+    lock.getUserInfo(localStorage.getItem('access_token'), (error, profile) => {
       if (error) {
         return
       }
@@ -50,6 +57,7 @@ const actions = {
   },
 
   logout: ({ commit }) => {
+    localStorage.removeItem('access_token')
     localStorage.removeItem('id_token')
     commit('authenticate', false)
     commit('setProfile', null)

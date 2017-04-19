@@ -28,6 +28,8 @@
 
       <div class="col-md-9 col-lg-10">
         <br>
+        <p>Logged user: {{ userNickname() }}</p>
+        <br>
         <button @click="createNewAccount()" class="btn btn-primary">Link new one</button>
         <br>
         <br>
@@ -43,8 +45,15 @@
         <br>
         <br>
         <button class="btn btn-primary" @click="getRecentTweets()">Get Recent Tweets</button>
-        <div v-for="tweet in recentTweets" >
-          - {{ tweet.text}}
+
+        <div class="tweets-container">
+          <div class="card" v-for="tweet in recentTweets" >
+            <div class="card-block">
+              <div class="card-title">
+                <h4>{{ tweet.text}}</h4>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -66,7 +75,7 @@ export default {
   },
 
   methods: {
-    ...mapGetters(['profileImage']),
+    ...mapGetters(['profileImage', 'userNickname']),
     ...mapActions(['logout']),
 
     createNewAccount () {
@@ -96,7 +105,11 @@ export default {
     },
 
     getRecentTweets () {
-      this.axios.get('/1/secure/account/1/recentTweets').then((response) => {
+      this.axios.get('/1/secure/account/1/recentTweets', {
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('access_token')
+        }
+      }).then((response) => {
         this.recentTweets = response.data
       })
     }
@@ -130,6 +143,16 @@ export default {
 .bootstrap-vertical-nav {
   height: 100%;
   overflow: auto;
+}
+
+.tweets-container {
+  overflow-y: auto;
+  max-height: 300px
+}
+
+.card {
+  margin-top: 10px;
+  background-color: rgb(110, 207, 242)
 }
 
 </style>

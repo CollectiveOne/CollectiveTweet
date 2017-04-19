@@ -41,7 +41,7 @@ public class TwitterAuthorization {
     @RequestMapping(path = "url", method = RequestMethod.GET, produces = { MediaType.TEXT_HTML_VALUE })
     public String requestToken() {
         //The call back URL
-        String callBackUrl="http://127.0.0.1:8080/1/account/auth/getToken";
+        String callBackUrl="http://127.0.0.1:7000/1/account/auth/getToken";
         TwitterConnectionFactory connectionFactory = new TwitterConnectionFactory(consumerKey, consumerSecret);
         OAuth1Operations oauthOperations = connectionFactory.getOAuthOperations();
         OAuthToken requestToken = oauthOperations.fetchRequestToken(callBackUrl, null);
