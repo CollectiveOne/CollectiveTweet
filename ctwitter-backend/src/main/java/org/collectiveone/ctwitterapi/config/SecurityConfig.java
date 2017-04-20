@@ -17,10 +17,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Value("${auth0.audience}")
     private String audience;
+    
+    @Value("${auth0.secret}")
+    private String secret;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        JwtWebSecurityConfigurer.forRS256(audience, issuer)
+        JwtWebSecurityConfigurer.forHS256(audience, issuer, secret.getBytes())
                 .configure(http)
                 .authorizeRequests()
                 .antMatchers("/1/secure/**").fullyAuthenticated();
