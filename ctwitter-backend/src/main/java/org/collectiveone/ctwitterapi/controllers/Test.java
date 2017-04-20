@@ -6,6 +6,9 @@ import org.collectiveone.ctwitterapi.model.Account;
 import org.collectiveone.ctwitterapi.repositories.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.social.twitter.api.Tweet;
 import org.springframework.social.twitter.api.impl.TwitterTemplate;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,6 +43,13 @@ public class Test {
 	
 	@RequestMapping(path = "/secure/ping", method = RequestMethod.GET)
     public @ResponseBody String sercurePing() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Object principal =  auth.getPrincipal();
+		return "true";
+	}
+	
+	@RequestMapping(path = "/securescoped/ping", method = RequestMethod.GET)
+    public @ResponseBody String sercureScopedPing() {
 		
 		return "true";
 	}
