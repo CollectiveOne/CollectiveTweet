@@ -46,6 +46,10 @@
         <br>
         <button class="btn btn-primary" @click="getRecentTweets()">Get Recent Tweets</button>
 
+        <div class="">
+          {{ response }}
+        </div>
+
         <div class="tweets-container">
           <div class="card" v-for="tweet in recentTweets" >
             <div class="card-block">
@@ -70,7 +74,8 @@ export default {
       tweet: '',
       recentTweets: {},
       showSentSuccess: false,
-      showSentError: false
+      showSentError: false,
+      response: ''
     }
   },
 
@@ -105,12 +110,25 @@ export default {
     },
 
     getRecentTweets () {
-      this.axios.get('/1/secure/account/1/recentTweets', {
+      // this.axios.get('/1/secure/account/1/recentTweets', {
+      // this.axios.get('/1/account/1/recentTweets', {
+      //   headers: {
+      //     'Authorization': 'Bearer ' + localStorage.getItem('id_token')
+      //   }
+      // }).then((response) => {
+      //   this.recentTweets = response.data
+      // })
+      this.axios.get('/1/secure/ping', {
         headers: {
-          'Authorization': 'Bearer ' + localStorage.getItem('access_token')
+          'Authorization': 'Bearer ' + localStorage.getItem('id_token')
         }
-      }).then((response) => {
-        this.recentTweets = response.data
+      })
+      .catch((data) => {
+        debugger
+        this.response = data
+      })
+      .then((response) => {
+        this.response = response.data
       })
     }
   }
@@ -146,13 +164,17 @@ export default {
 }
 
 .tweets-container {
+  margin-top: 20px;
   overflow-y: auto;
-  max-height: 300px
+  max-height: 400px;
+  width: 400px;
 }
 
 .card {
-  margin-top: 10px;
-  background-color: rgb(110, 207, 242)
+  margin-top: 15px;
+  background-color: rgb(29, 161, 242);
+  color: white;
+  border-radius: 10px;
 }
 
 </style>

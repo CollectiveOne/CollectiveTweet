@@ -35,25 +35,26 @@ const mutations = {
   }
 }
 
-const actions = {
-  updateAuthenticated: ({ commit }) => {
-    commit('authenticate', !!localStorage.getItem('id_token'))
-    // TODO: call action (updateProfile) within action (updateAuthenticated)
+const updateProfileHelper = (commit) => {
+  if (localStorage.getItem('access_token')) {
     lock.getUserInfo(localStorage.getItem('access_token'), (error, profile) => {
       if (error) {
         return
       }
       commit('setProfile', profile)
     })
+  }
+}
+
+const actions = {
+  updateAuthenticated: ({ commit }) => {
+    commit('authenticate', !!localStorage.getItem('access_token'))
+    // TODO: call action (updateProfile) within action (updateAuthenticated)
+    updateProfileHelper(commit)
   },
 
   updateProfile: ({ commit }) => {
-    lock.getUserInfo(localStorage.getItem('access_token'), (error, profile) => {
-      if (error) {
-        return
-      }
-      commit('setProfile', profile)
-    })
+    updateProfileHelper(commit)
   },
 
   logout: ({ commit }) => {

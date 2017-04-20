@@ -18,7 +18,17 @@ Vue.config.productionTip = false
 Vue.use(VueAxios, axios)
 Vue.use(BootstrapVue)
 
-export var lock = new Auth0Lock(process.env.AUTH0_CLIENT_ID, process.env.AUTH0_DOMAIN)
+var options = {
+  auth: {
+    params: {
+      connectionScopes: {
+        connectionName: [ 'openid', 'email', 'user_metadata', 'app_metadata', 'picture' ]
+      }
+    }
+  }
+}
+export var lock = new Auth0Lock(process.env.AUTH0_CLIENT_ID, process.env.AUTH0_DOMAIN, options)
+// export var lock = new Auth0Lock(process.env.AUTH0_CLIENT_ID, process.env.AUTH0_DOMAIN)
 
 /* eslint-disable no-new */
 new Vue({

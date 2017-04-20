@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping("1/account")
+@RequestMapping("1")
 @RestController
 public class Test {
 	
@@ -27,7 +27,7 @@ public class Test {
     @Autowired
     AccountRepository accountRepository;
 	
-	@RequestMapping(path = "{id}/recentTweets", method = RequestMethod.GET)
+	@RequestMapping(path = "/account/{id}/recentTweets", method = RequestMethod.GET)
     public @ResponseBody List<Tweet> recentTweets(@PathVariable("id") Long id) {
 		
 		Account account = accountRepository.findById(id);
@@ -35,14 +35,13 @@ public class Test {
 		TwitterTemplate twitterTemplate = new TwitterTemplate(consumerKey, consumerSecret, account.getAccessToken(), account.getAccessTokenSecret());
         List<Tweet> tweets = twitterTemplate.timelineOperations().getHomeTimeline();
         
-//        List<TweetDto> tweetDtos = new ArrayList<TweetDto>();
-//        for(Tweet tweet : tweets) {
-//        	TweetDto tweetDto = new TweetDto();
-//        	tweetDto.setText(tweet.getText());
-//        	tweetDtos.add(tweetDto);
-//        }
-        
         return tweets;
+	}
+	
+	@RequestMapping(path = "/secure/ping", method = RequestMethod.GET)
+    public @ResponseBody String ping() {
+		
+		return "true";
 	}
 
 }
