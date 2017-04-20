@@ -39,6 +39,12 @@ public class Test {
 	}
 	
 	@RequestMapping(path = "/secure/ping", method = RequestMethod.GET)
+    public @ResponseBody String sercurePing() {
+		
+		return "true";
+	}
+	
+	@RequestMapping(path = "/ping", method = RequestMethod.GET)
     public @ResponseBody String ping() {
 		
 		return "true";

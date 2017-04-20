@@ -45,6 +45,7 @@
         <br>
         <br>
         <button class="btn btn-primary" @click="getRecentTweets()">Get Recent Tweets</button>
+        <button class="btn btn-primary" @click="getTest()">Get Non Secured </button>
 
         <div class="">
           {{ response }}
@@ -124,7 +125,20 @@ export default {
         }
       })
       .catch((data) => {
-        debugger
+        this.response = data
+      })
+      .then((response) => {
+        this.response = response.data
+      })
+    },
+
+    getTest () {
+      this.axios.get('/1/ping', {
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('id_token')
+        }
+      })
+      .catch((data) => {
         this.response = data
       })
       .then((response) => {
