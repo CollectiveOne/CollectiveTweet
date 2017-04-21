@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" class="container-fluid">
     <component :is="view"></component>
   </div>
 </template>
@@ -42,7 +42,6 @@ export default {
       self.updateAuthenticated()
 
       lock.on('authenticated', (authResult) => {
-        debugger
         localStorage.setItem('access_token', authResult.accessToken)
         localStorage.setItem('id_token', authResult.idToken)
         self.updateAuthenticated()

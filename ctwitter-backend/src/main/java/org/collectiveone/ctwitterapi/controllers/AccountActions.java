@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping("1/secure/account")
+@RequestMapping("1/secured/account")
 @RestController
 public class AccountActions {
 
@@ -49,7 +49,7 @@ public class AccountActions {
 		
 	}
 	
-	@RequestMapping(path = "{id}/recentTweets", method = RequestMethod.GET, produces = { MediaType.TEXT_HTML_VALUE })
+	@RequestMapping(path = "{id}/recentTweets", method = RequestMethod.GET)
     public List<Tweet> recentTweets(@PathVariable("id") Long id) {
 		
 		Account account = accountRepository.findById(id);

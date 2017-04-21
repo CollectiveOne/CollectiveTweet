@@ -41,20 +41,19 @@ public class Test {
         return tweets;
 	}
 	
-	@RequestMapping(path = "/secure/ping", method = RequestMethod.GET)
+	@RequestMapping(path = "/secured/ping", method = RequestMethod.GET)
     public @ResponseBody String sercurePing() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		Object principal =  auth.getPrincipal();
-		return "true";
+		return auth.getName();
 	}
 	
-	@RequestMapping(path = "/securescoped/ping", method = RequestMethod.GET)
+	@RequestMapping(path = "/securedscoped/ping", method = RequestMethod.GET)
     public @ResponseBody String sercureScopedPing() {
 		
 		return "true";
 	}
 	
-	@RequestMapping(path = "/ping", method = RequestMethod.GET)
+	@RequestMapping(path = "/public/ping", method = RequestMethod.GET)
     public @ResponseBody String ping() {
 		
 		return "true";

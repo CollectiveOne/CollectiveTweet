@@ -1,11 +1,15 @@
 package org.collectiveone.ctwitterapi.controllers;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.collectiveone.ctwitterapi.model.Account;
 import org.collectiveone.ctwitterapi.model.AccountState;
 import org.collectiveone.ctwitterapi.repositories.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.social.oauth1.AuthorizedRequestToken;
 import org.springframework.social.oauth1.OAuth1Operations;
 import org.springframework.social.oauth1.OAuth1Parameters;
@@ -17,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
-@RequestMapping("1/account/auth")
+@RequestMapping("1")
 @RestController
 public class TwitterAuthorization {
 
@@ -38,16 +42,20 @@ public class TwitterAuthorization {
      * <em>/twitter/access/token</em>
      * @return
      */
-    @RequestMapping(path = "url", method = RequestMethod.GET, produces = { MediaType.TEXT_HTML_VALUE })
-    public String requestToken() {
+    @RequestMapping(path = "/secured/accountAuth/url", method = RequestMethod.GET, produces = { MediaType.TEXT_HTML_VALUE })
+    public String requestToken(final HttpServletRequest request) {
         //The call back URL
-        String callBackUrl="http://127.0.0.1:7000/1/account/auth/getToken";
+    	/* support */
+    	String callBackUrl = getAppUrl(request) + "/1/public/accountAuth/getToken";
         TwitterConnectionFactory connectionFactory = new TwitterConnectionFactory(consumerKey, consumerSecret);
         OAuth1Operations oauthOperations = connectionFactory.getOAuthOperations();
         OAuthToken requestToken = oauthOperations.fetchRequestToken(callBackUrl, null);
         String authorizeUrl = oauthOperations.buildAuthorizeUrl(requestToken.getValue(), OAuth1Parameters.NONE);
         
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		
         Account account = new Account();
+        account.setCreatorId(auth.getName());
         account.setState(AccountState.PENDINGAUTHORIZATION);
         account.setRequestToken(requestToken.getValue());
         account.setRequestTokenSecret(requestToken.getSecret());
@@ -67,7 +75,7 @@ public class TwitterAuthorization {
      * @param verifier
      * @return
      */
-    @RequestMapping(path = "getToken", method = RequestMethod.GET, produces = { MediaType.TEXT_HTML_VALUE })
+    @RequestMapping(path = "/public/accountAuth/getToken", method = RequestMethod.GET, produces = { MediaType.TEXT_HTML_VALUE })
     public String getAccessToken(@RequestParam(value = "oauth_token") String oauthToken, @RequestParam(value = "oauth_verifier") String verifier) {
 
     	Account account = accountRepository.findByRequestToken(oauthToken);
@@ -84,6 +92,10 @@ public class TwitterAuthorization {
         accountRepository.save(account);
 
         return "Success";
+    }
+    
+    private String getAppUrl(HttpServletRequest request) {
+        return "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
     }
 
 
