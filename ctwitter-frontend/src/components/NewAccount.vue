@@ -9,8 +9,12 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
 export default {
   methods: {
+    ...mapActions(['udpateProfile']),
+
     launchTwitterAuthentication () {
       this.axios.get('/1/secured/accountAuth/url', {
         headers: {
@@ -18,6 +22,11 @@ export default {
         }
       }).then((response) => {
         var newwindow = window.open(response.data, 'Link twitter account', 'left=300,height=200,width=400')
+
+        newwindow.onunload = function () {
+          this.udpateProfile()
+        }
+
         if (window.focus) {
           newwindow.focus()
         }

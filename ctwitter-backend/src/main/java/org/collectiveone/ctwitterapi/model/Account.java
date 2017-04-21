@@ -7,6 +7,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import org.collectiveone.ctwitterapi.dtos.AccountDto;
+
 @Entity
 public class Account {
 	@Id
@@ -15,10 +17,23 @@ public class Account {
 	@Enumerated(EnumType.STRING)
 	private AccountState state;
 	private String creatorId;
+	private String twitterHandle;
+	
 	private String requestToken;
 	private String requestTokenSecret;
 	private String accessToken;
 	private String accessTokenSecret;
+	
+	public AccountDto toDto() {
+		AccountDto dto = new AccountDto();
+		
+		dto.setId(id);
+		dto.setTwitterHandle(twitterHandle);
+		dto.setCreatorId(creatorId);
+		
+		return dto;
+		
+	}
 	
 	public Long getId() {
 		return id;
@@ -38,6 +53,13 @@ public class Account {
 	public void setCreatorId(String creatorId) {
 		this.creatorId = creatorId;
 	}
+	public String getTwitterHandle() {
+		return twitterHandle;
+	}
+	public void setTwitterHandle(String twitterHandle) {
+		this.twitterHandle = twitterHandle;
+	}
+
 	public String getRequestToken() {
 		return requestToken;
 	}

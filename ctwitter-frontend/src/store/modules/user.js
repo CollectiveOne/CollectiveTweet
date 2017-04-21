@@ -1,8 +1,10 @@
+import Vue from 'vue'
 import { lock } from '../../main'
 
 const state = {
   authenticated: false,
-  profile: null
+  profile: null,
+  accounts: []
 }
 
 const getters = {
@@ -23,6 +25,9 @@ const getters = {
     } else {
       return ''
     }
+  },
+  myAccounts: state => {
+    return state.accounts
   }
 }
 
@@ -32,17 +37,9 @@ const mutations = {
   },
   setProfile: (state, payload) => {
     state.profile = payload
-  }
-}
-
-const updateProfileHelper = (commit) => {
-  if (localStorage.getItem('access_token')) {
-    lock.getUserInfo(localStorage.getItem('access_token'), (error, profile) => {
-      if (error) {
-        return
-      }
-      commit('setProfile', profile)
-    })
+  },
+  setAccounts: (state, payload) => {
+    state.accounts = payload
   }
 }
 
@@ -63,6 +60,23 @@ const actions = {
     commit('authenticate', false)
     commit('setProfile', null)
   }
+}
+
+const updateProfileHelper = (commit) => {
+  /* user profile */
+  if (localStorage.getItem('access_token')) {
+    lock.getUserInfo(localStorage.getItem('access_token'), (error, profile) => {
+      if (error) {
+        return
+      }
+      commit('setProfile', profile)
+    })
+  }
+
+  /* accounts data */
+  Vue.axios.get('/1/secured/account/mines').then((response) => {
+    commit('setAccounts', response.data)
+  })
 }
 
 export default {

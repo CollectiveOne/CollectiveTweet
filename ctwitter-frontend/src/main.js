@@ -18,6 +18,8 @@ Vue.config.productionTip = false
 Vue.use(VueAxios, axios)
 Vue.use(BootstrapVue)
 
+Vue.axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('id_token')
+
 var options = {
   auth: {
     params: {

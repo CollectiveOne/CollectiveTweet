@@ -2,16 +2,13 @@
   <div class="">
     <b-navbar toggleable type="inverse" variant="inverse">
       <b-nav-toggle target="nav_collapse"></b-nav-toggle>
-      <b-link class="navbar-brand" to="#">
+      <b-link class="navbar-brand" to="/home">
         <img src="../assets/logo.png" class="logo">
       </b-link>
       <b-collapse is-nav id="nav_collapse">
-        <b-nav is-nav-bar>
-          <b-nav-item>accounts</b-nav-item>
-        </b-nav>
         <b-nav is-nav-bar class="ml-auto">
           <b-nav-item right-alignment>{{ userNickname() }}</b-nav-item>
-          <b-nav-item right-alignment>logout</b-nav-item>
+          <b-nav-item @click="logout()" right-alignment>logout</b-nav-item>
         </b-nav>
       </b-collapse>
     </b-navbar>
@@ -22,7 +19,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 import NewAccount from './NewAccount.vue'
 
@@ -32,7 +29,8 @@ export default {
   },
 
   methods: {
-    ...mapGetters(['userNickname'])
+    ...mapGetters(['userNickname']),
+    ...mapActions(['logout'])
   }
 }
 </script>

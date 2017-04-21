@@ -10,10 +10,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.social.connect.Connection;
 import org.springframework.social.oauth1.AuthorizedRequestToken;
 import org.springframework.social.oauth1.OAuth1Operations;
 import org.springframework.social.oauth1.OAuth1Parameters;
 import org.springframework.social.oauth1.OAuthToken;
+import org.springframework.social.twitter.api.impl.TwitterTemplate;
 import org.springframework.social.twitter.connect.TwitterConnectionFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -88,6 +90,10 @@ public class TwitterAuthorization {
         account.setAccessToken(accessToken.getValue());
         account.setAccessTokenSecret(accessToken.getSecret());
         account.setState(AccountState.AUTHORIZED);
+        
+        /* connect and get account data to be persisted by us */
+        TwitterTemplate twitter = new TwitterTemplate(consumerKey, consumerSecret, accessToken.getValue(), accessToken.getSecret());
+        account.setTwitterHandle(twitter.userOperations().getScreenName());
         
         accountRepository.save(account);
 

@@ -31,25 +31,6 @@ export default {
     ...mapGetters(['profileImage', 'userNickname']),
     ...mapActions(['logout']),
 
-    sendTweet () {
-      this.axios.post('/1/secured/account/1/tweet', { text: this.tweet }, {
-        headers: {
-          'Authorization': 'Bearer ' + localStorage.getItem('id_token')
-        }
-      })
-        .catch((data) => {
-          this.showSentError = true
-        })
-        .then((response) => {
-          if (response.data === 'done') {
-            this.tweet = ''
-            this.showSentSuccess = true
-          } else {
-            this.showSentError = true
-          }
-        })
-    },
-
     getRecentTweets () {
       this.axios.get('/1/secured/account/1/recentTweets', {
         headers: {
