@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequestMapping("1/secured/account")
 @RestController
-public class AccountActions {
+public class AccountController {
 
 	@Value("${twitter.consumer.key}")
     String consumerKey;

@@ -5,8 +5,8 @@
       <small>{{ nChars }} / 140</small>
     </div>
     <div class="btns-group">
-      <b-btn @click="sendTweet()" variant="primary">Propose</b-btn>
-      <b-btn>Cancel</b-btn>
+      <b-btn @click="ok()" variant="primary">Propose</b-btn>
+      <b-btn @click="$emit('cancel')">Cancel</b-btn>
     </div>
   </div>
 </template>
@@ -33,15 +33,10 @@ export default {
   },
 
   methods: {
-    sendTweet () {
-      this.axios.post('/1/secured/account/' + this.accountId + '/tweet', { text: this.text }, {
+    ok () {
+      this.$emit('ok', {
+        text: this.text
       })
-        .catch((data) => {
-          this.$emit('error')
-        })
-        .then((response) => {
-          this.$emit('done')
-        })
     }
   }
 }

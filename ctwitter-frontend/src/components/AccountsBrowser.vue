@@ -20,6 +20,7 @@ export default {
   components: {
     AppAccountCard: AccountCard
   },
+
   methods: {
     ...mapGetters(['myAccounts'])
   }
