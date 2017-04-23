@@ -13,22 +13,22 @@
       </div>
     </div>
     <div class="row editions-container">
-      <div class="col-4 ranking-container no-go-container" @ondrop="dropOnNoGo">
+      <div class="col-4 ranking-container no-go-container">
         <h5>no-go</h5>
         <app-edition-card
-          v-for="edition in proposalGetNoGoEditions()" class="edition-card"
+          v-for="edition in noGoEditions" class="edition-card"
           :key="edition.id" :edition="edition"></app-edition-card>
       </div>
-      <div class="col-4 ranking-container neutral-container" @ondrop="dropOnNeutral()">
+      <div class="col-4 ranking-container neutral-container">
         <h5>neutral</h5>
         <app-edition-card
-          v-for="edition in proposalGetNeutralEditions()" class="edition-card"
+          v-for="edition in neutralEditions" class="edition-card"
           :key="edition.id" :edition="edition"></app-edition-card>
       </div>
-      <div class="col-4 ranking-container go-container" @ondrop="dropNoGoNeutral()">
+      <div class="col-4 ranking-container go-container">
         <h5>go</h5>
         <app-edition-card
-          v-for="edition in proposalGetGoEditions()" class="edition-card"
+          v-for="edition in goEditions" class="edition-card"
           :key="edition.id" :edition="edition"></app-edition-card>
       </div>
 
@@ -37,8 +37,6 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
-
 import TweetComposer from './TweetComposer.vue'
 import EditionCard from './EditionCard.vue'
 
@@ -51,23 +49,46 @@ export default {
   data () {
     return {
       id: 0,
-      proposing: false
+      proposing: false,
+      proposal: null
     }
   },
 
   methods: {
-    ...mapGetters(['proposalGetGoEditions', 'proposalGetNeutralEditions', 'proposalGetNoGoEditions']),
-    ...mapActions(['proposalSetActiveAndFetchIfNeeded', 'proposalMoveDraggedToNoGo']),
-
     dropOnNoGo () {
       debugger
       this.proposalMoveDraggedToNoGo()
     }
   },
 
+  computed: {
+    goEditions () {
+      if (this.proposal) {
+        return this.proposal.editions.filter(e => { return e.myvote === 'go' })
+      } else {
+        return []
+      }
+    },
+    neutralEditions () {
+      if (this.proposal) {
+        return this.proposal.editions.filter(e => { return e.myvote === 'neutral' })
+      } else {
+        return []
+      }
+    },
+    noGoEditions () {
+      if (this.proposal) {
+        return this.proposal.editions.filter(e => { return e.myvote === 'nogo' })
+      } else {
+        return []
+      }
+    }
+  },
+
   created () {
-    this.id = parseInt(this.$route.params.id)
-    this.proposalSetActiveAndFetchIfNeeded(this.id)
+    this.axios.get('1/secured/proposal/' + this.$route.params.id).then((response) => {
+      this.proposal = response.data
+    })
   }
 }
 </script>
