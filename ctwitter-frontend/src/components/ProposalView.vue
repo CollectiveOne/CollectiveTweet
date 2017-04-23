@@ -13,19 +13,19 @@
       </div>
     </div>
     <div class="row editions-container">
-      <div class="col-4 ranking-container no-go-container">
+      <div class="col-4 ranking-container no-go-container" @ondrop="dropOnNoGo">
         <h5>no-go</h5>
         <app-edition-card
           v-for="edition in proposalGetNoGoEditions()" class="edition-card"
           :key="edition.id" :edition="edition"></app-edition-card>
       </div>
-      <div class="col-4 ranking-container neutral-container">
+      <div class="col-4 ranking-container neutral-container" @ondrop="dropOnNeutral()">
         <h5>neutral</h5>
         <app-edition-card
           v-for="edition in proposalGetNeutralEditions()" class="edition-card"
           :key="edition.id" :edition="edition"></app-edition-card>
       </div>
-      <div class="col-4 ranking-container go-container">
+      <div class="col-4 ranking-container go-container" @ondrop="dropNoGoNeutral()">
         <h5>go</h5>
         <app-edition-card
           v-for="edition in proposalGetGoEditions()" class="edition-card"
@@ -57,10 +57,11 @@ export default {
 
   methods: {
     ...mapGetters(['proposalGetGoEditions', 'proposalGetNeutralEditions', 'proposalGetNoGoEditions']),
-    ...mapActions(['proposalSetActiveAndFetchIfNeeded']),
+    ...mapActions(['proposalSetActiveAndFetchIfNeeded', 'proposalMoveDraggedToNoGo']),
 
-    drop () {
-      this.goEditions.push(this.getEditionBeingDragged())
+    dropOnNoGo () {
+      debugger
+      this.proposalMoveDraggedToNoGo()
     }
   },
 

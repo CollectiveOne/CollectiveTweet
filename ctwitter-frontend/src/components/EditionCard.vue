@@ -34,10 +34,10 @@ export default {
   },
 
   methods: {
-    ...mapMutations(['setEditionBeingDragged']),
+    ...mapMutations(['proposalSetEditionBeingDragged']),
 
     dragStart () {
-      this.setEditionBeingDragged(this.edition)
+      this.proposalSetEditionBeingDragged(this.edition)
     }
   }
 }

@@ -2,7 +2,8 @@ import Vue from 'vue'
 
 const state = {
   proposals: [],
-  activeId: 0
+  activeId: 0,
+  editionBeingDragged: null
 }
 
 const getActiveProposalHelper = (state) => {
@@ -33,6 +34,9 @@ const getters = {
       return proposal.editions.filter(e => { return e.myvote === 'nogo' })
     }
     return []
+  },
+  proposalGetEditionBeingDragged: state => {
+    return state.editionBeingDragged
   }
 }
 
@@ -45,6 +49,9 @@ const mutations = {
       payload = parseInt(payload)
     }
     state.activeId = payload
+  },
+  proposalSetEditionBeingDragged: (state, payload) => {
+    state.editionBeingDragged = payload
   }
 }
 
@@ -62,6 +69,16 @@ const actions = {
     Vue.axios.get('1/secured/proposal/' + payload).then((response) => {
       commit('proposalAdd', response.data)
     })
+  },
+
+  proposalMoveDraggedToNoGo: (context, payload) => {
+    debugger
+    let edition = context.getters.proposalGetEditionBeingDragged
+    let proposal = context.getters.proposalGetActive
+
+    let ix = proposal.editions.findIndex(e => { e.id === edition.id })
+
+    proposal.editions[ix].myvote = 'nogo'
   }
 }
 
