@@ -4,7 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.collectiveone.ctwitterapi.model.Account;
 import org.collectiveone.ctwitterapi.model.AccountState;
-import org.collectiveone.ctwitterapi.repositories.AccountRepository;
+import org.collectiveone.ctwitterapi.repositories.AccountRepositoryIf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -34,7 +34,7 @@ public class TwitterAuthorization {
     String consumerSecret;
     
     @Autowired
-    AccountRepository accountRepository;
+    AccountRepositoryIf accountRepository;
 
     
     /**

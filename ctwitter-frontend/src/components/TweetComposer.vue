@@ -14,9 +14,9 @@
 <script>
 export default {
   props: {
-    accountId: {
-      type: Number,
-      default: 0
+    textInit: {
+      type: String,
+      default: ''
     }
   },
 
@@ -38,6 +38,10 @@ export default {
         text: this.text
       })
     }
+  },
+
+  created () {
+    this.text = this.textInit
   }
 }
 </script>

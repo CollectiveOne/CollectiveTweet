@@ -3,7 +3,7 @@ package org.collectiveone.ctwitterapi.controllers;
 import java.util.List;
 
 import org.collectiveone.ctwitterapi.model.Account;
-import org.collectiveone.ctwitterapi.repositories.AccountRepository;
+import org.collectiveone.ctwitterapi.repositories.AccountRepositoryIf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -28,7 +28,7 @@ public class Test {
     String consumerSecret;
     
     @Autowired
-    AccountRepository accountRepository;
+    AccountRepositoryIf accountRepository;
 	
 	@RequestMapping(path = "/account/{id}/recentTweets", method = RequestMethod.GET)
     public @ResponseBody List<Tweet> recentTweets(@PathVariable("id") Long id) {

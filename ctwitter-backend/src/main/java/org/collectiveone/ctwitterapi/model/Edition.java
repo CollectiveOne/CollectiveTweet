@@ -6,17 +6,32 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import org.collectiveone.ctwitterapi.dtos.EditionDto;
+
 @Entity
-public class EditionProposal {
+public class Edition {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	private String creatorId;
 	@ManyToOne
-	TweetProposal proposal;
+	private Proposal proposal;
 	@ManyToOne
-	private EditionProposal parent;
+	private Edition parent;
 	private String text;
+	
+	public EditionDto toDto() {
+		EditionDto dto = new EditionDto();
+		
+		dto.setId(id);
+		dto.setCreatorId(creatorId);
+		if(parent != null) dto.setParentId(parent.getId());
+		dto.setProposalId(proposal.getId());
+		dto.setText(text);
+		dto.setMyvote("neutral");
+		
+		return dto;
+	}
 	
 	public Long getId() {
 		return id;
@@ -30,16 +45,16 @@ public class EditionProposal {
 	public void setCreatorId(String creatorId) {
 		this.creatorId = creatorId;
 	}
-	public TweetProposal getProposal() {
+	public Proposal getProposal() {
 		return proposal;
 	}
-	public void setProposal(TweetProposal proposal) {
+	public void setProposal(Proposal proposal) {
 		this.proposal = proposal;
 	}
-	public EditionProposal getParent() {
+	public Edition getParent() {
 		return parent;
 	}
-	public void setParent(EditionProposal parent) {
+	public void setParent(Edition parent) {
 		this.parent = parent;
 	}
 	public String getText() {

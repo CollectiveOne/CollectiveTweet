@@ -7,11 +7,18 @@
         </a>
       </div>
     </div>
+    <hr>
     <div class="row">
       <div class="col">
         <b-btn v-if="!proposing" @click="proposeClick()" variant="primary">propose tweet</b-btn>
         <app-tweet-composer v-if="proposing" class="composer" :accountId="account.id"
-        @ok="newProposalReceived($event)" @cancel="proposing = false"></app-tweet-composer>
+          @ok="newProposalReceived($event)" @cancel="proposing = false"></app-tweet-composer>
+      </div>
+    </div>
+    <hr>
+    <div class="row proposals-container">
+      <div class="col">
+        <app-tweet-proposal-card v-for="proposal in account.proposals" :key="proposal.id" :proposal="proposal"></app-tweet-proposal-card>
       </div>
     </div>
   </div>
@@ -20,18 +27,21 @@
 <script>
 
 import TweetComposer from './TweetComposer.vue'
+import TweetProposalCard from './TweetProposalCard.vue'
 
 export default {
   components: {
-    AppTweetComposer: TweetComposer
+    AppTweetComposer: TweetComposer,
+    AppTweetProposalCard: TweetProposalCard
   },
 
   data () {
     return {
       proposing: false,
       account: {
+        id: '0',
         twitterHandle: 'example',
-        id: '0'
+        proposals: []
       }
     }
   },
@@ -42,7 +52,6 @@ export default {
     },
 
     newProposalReceived (data) {
-      debugger
       this.proposing = false
       this.axios.post('1/secured/proposal', data, {
         params: {
@@ -74,6 +83,10 @@ export default {
 
 .composer {
   margin-top: 10px;
+}
+
+.proposals-container {
+  margin-top: 20px;
 }
 
 </style>

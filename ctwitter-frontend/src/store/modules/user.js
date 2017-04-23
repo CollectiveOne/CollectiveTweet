@@ -44,10 +44,9 @@ const mutations = {
 }
 
 const actions = {
-  updateAuthenticated: ({ commit }) => {
-    commit('authenticate', !!localStorage.getItem('access_token'))
-    // TODO: call action (updateProfile) within action (updateAuthenticated)
-    updateProfileHelper(commit)
+  updateAuthenticated: (context) => {
+    context.commit('authenticate', !!localStorage.getItem('access_token'))
+    context.dispatch('updateProfile')
   },
 
   updateProfile: ({ commit }) => {

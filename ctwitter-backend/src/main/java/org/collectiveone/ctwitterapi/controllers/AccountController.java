@@ -6,7 +6,7 @@ import org.collectiveone.ctwitterapi.dtos.AccountDto;
 import org.collectiveone.ctwitterapi.dtos.TweetDto;
 import org.collectiveone.ctwitterapi.model.Account;
 import org.collectiveone.ctwitterapi.model.AccountState;
-import org.collectiveone.ctwitterapi.repositories.AccountRepository;
+import org.collectiveone.ctwitterapi.repositories.AccountRepositoryIf;
 import org.collectiveone.ctwitterapi.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,7 +36,7 @@ public class AccountController {
     AccountService accountService;
     
     @Autowired
-    AccountRepository accountRepository;
+    AccountRepositoryIf accountRepository;
 	
     @RequestMapping(path = "mines", method = RequestMethod.GET)
     public @ResponseBody List<AccountDto> mines() {

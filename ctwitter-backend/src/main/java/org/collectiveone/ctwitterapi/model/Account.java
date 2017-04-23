@@ -1,11 +1,15 @@
 package org.collectiveone.ctwitterapi.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 import org.collectiveone.ctwitterapi.dtos.AccountDto;
 
@@ -19,6 +23,9 @@ public class Account {
 	private String creatorId;
 	private String twitterHandle;
 	
+	@OneToMany(mappedBy="account")
+	private List<Proposal> proposals = new ArrayList<Proposal>();
+	
 	private String requestToken;
 	private String requestTokenSecret;
 	private String accessToken;
@@ -31,8 +38,13 @@ public class Account {
 		dto.setTwitterHandle(twitterHandle);
 		dto.setCreatorId(creatorId);
 		
-		return dto;
+		if(proposals != null) {
+			for(Proposal proposal : proposals) {
+				dto.getProposals().add(proposal.toDto());
+			}
+		}
 		
+		return dto;
 	}
 	
 	public Long getId() {
@@ -58,6 +70,12 @@ public class Account {
 	}
 	public void setTwitterHandle(String twitterHandle) {
 		this.twitterHandle = twitterHandle;
+	}
+	public List<Proposal> getProposals() {
+		return proposals;
+	}
+	public void setProposals(List<Proposal> proposals) {
+		this.proposals = proposals;
 	}
 
 	public String getRequestToken() {

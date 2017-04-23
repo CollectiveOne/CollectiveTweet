@@ -1,10 +1,14 @@
 package org.collectiveone.ctwitterapi.dtos;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AccountDto {
 	Long id;
 	String twitterHandle;
 	String creatorId;
 	String creatorUsername;
+	List<ProposalDto> proposals = new ArrayList<ProposalDto>();
 	
 	public Long getId() {
 		return id;
@@ -30,4 +34,11 @@ public class AccountDto {
 	public void setCreatorUsername(String creatorUsername) {
 		this.creatorUsername = creatorUsername;
 	}
+	public List<ProposalDto> getProposals() {
+		return proposals;
+	}
+	public void setProposals(List<ProposalDto> proposalsDtos) {
+		this.proposals = proposalsDtos;
+	}
+	
 }

@@ -7,7 +7,7 @@ import javax.transaction.Transactional;
 
 import org.collectiveone.ctwitterapi.dtos.AccountDto;
 import org.collectiveone.ctwitterapi.model.Account;
-import org.collectiveone.ctwitterapi.repositories.AccountRepository;
+import org.collectiveone.ctwitterapi.repositories.AccountRepositoryIf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 public class AccountService {
 	
 	@Autowired
-    AccountRepository accountRepository;
+    AccountRepositoryIf accountRepository;
 	
 	@Transactional
 	public AccountDto get(Long id) {
