@@ -13,7 +13,8 @@
       </div>
     </div>
     <div class="row editions-container">
-      <div class="col-4 ranking-container no-go-container">
+      <div class="col-4 ranking-container no-go-container" :class="{ 'dropping': draggingOverNoGo }"
+        @dragenter="draggingOverNoGo = true" @dragover.prevent @dragleave="draggingOverNoGo = false" @drop="dropOnNoGo">
         <h5>no-go</h5>
         <app-edition-card
           v-for="edition in noGoEditions" class="edition-card"
@@ -50,14 +51,15 @@ export default {
     return {
       id: 0,
       proposing: false,
-      proposal: null
+      proposal: null,
+      draggingOverNoGo: false
     }
   },
 
   methods: {
     dropOnNoGo () {
-      debugger
-      this.proposalMoveDraggedToNoGo()
+      this.draggingOverNoGo = false
+      console.log('hey!')
     }
   },
 
@@ -120,6 +122,10 @@ export default {
 
 .no-go-container {
   background-color: rgb(255, 172, 172)
+}
+
+.dropping {
+  background-color: rgb(255, 231, 145)
 }
 
 </style>

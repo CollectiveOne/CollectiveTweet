@@ -37,7 +37,7 @@ export default {
     ...mapMutations(['proposalSetEditionBeingDragged']),
 
     dragStart () {
-      this.proposalSetEditionBeingDragged(this.edition)
+      this.$emit('dragging-me', this.edition)
     }
   }
 }
