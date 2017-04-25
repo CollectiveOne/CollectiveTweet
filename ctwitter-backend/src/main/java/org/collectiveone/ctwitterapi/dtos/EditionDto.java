@@ -6,7 +6,7 @@ public class EditionDto {
 	private Long proposalId;
 	private Long parentId;
 	private String text;
-	private String myvote;
+	private Integer myRank;
 	
 	public Long getId() {
 		return id;
@@ -38,11 +38,11 @@ public class EditionDto {
 	public void setText(String text) {
 		this.text = text;
 	}
-	public String getMyvote() {
-		return myvote;
+	public Integer getMyRank() {
+		return myRank;
 	}
-	public void setMyvote(String myvote) {
-		this.myvote = myvote;
+	public void setMyRank(Integer myRank) {
+		this.myRank = myRank;
 	}
 	
 }

@@ -1,10 +1,13 @@
 package org.collectiveone.ctwitterapi.model;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import org.collectiveone.ctwitterapi.dtos.EditionDto;
 
@@ -19,6 +22,8 @@ public class Edition {
 	@ManyToOne
 	private Edition parent;
 	private String text;
+	@OneToMany(mappedBy="edition")
+	private List<EditionRank> ranks;
 	
 	public EditionDto toDto() {
 		EditionDto dto = new EditionDto();
@@ -28,7 +33,7 @@ public class Edition {
 		if(parent != null) dto.setParentId(parent.getId());
 		dto.setProposalId(proposal.getId());
 		dto.setText(text);
-		dto.setMyvote("neutral");
+		dto.setMyRank(0);
 		
 		return dto;
 	}
@@ -63,5 +68,14 @@ public class Edition {
 	public void setText(String text) {
 		this.text = text;
 	}
+
+	public List<EditionRank> getRanks() {
+		return ranks;
+	}
+
+	public void setRanks(List<EditionRank> ranks) {
+		this.ranks = ranks;
+	}
+	
 		
 }

@@ -23,7 +23,15 @@ public class ProposalsController {
     
     @RequestMapping(path = "/{id}",  method = RequestMethod.GET)
     public ProposalDto get(@PathVariable("id") Long id) {
-    	return proposalService.get(id);
+    	
+    	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    	
+    	if(auth.isAuthenticated()) {
+    		return proposalService.get(id, auth.getName());
+    	} else {
+    		return proposalService.get(id, null);
+    	}
+    	
     }
     
     @RequestMapping(path = "", method = RequestMethod.POST, produces = { MediaType.TEXT_HTML_VALUE })
@@ -51,5 +59,21 @@ public class ProposalsController {
     	
     	return "error";
 	}
-
+    
+    @RequestMapping(path = "/{pId}/edition/{eId}/rank", method = RequestMethod.PUT, produces = { MediaType.TEXT_HTML_VALUE })
+    public String rankEdition(
+    		@PathVariable("pId") Long proposalId, 
+    		@PathVariable("eId") Long editionId,
+    		@RequestParam("myRank") int rank
+    		) {
+		
+    	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    	
+    	if(auth.isAuthenticated()) {
+        	proposalService.rankEdition(auth.getName(), proposalId, editionId, rank);
+        	return "success";
+    	}
+    	
+    	return "error";
+	}
 }
