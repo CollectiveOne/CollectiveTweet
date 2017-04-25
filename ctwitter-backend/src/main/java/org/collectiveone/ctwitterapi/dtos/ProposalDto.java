@@ -7,7 +7,9 @@ public class ProposalDto {
 	private Long id;
 	private String creatorId;
 	private Long accountId;
+	private String firstVersion;
 	private List<EditionDto> editions = new ArrayList<EditionDto>();
+	
 	
 	public Long getId() {
 		return id;
@@ -26,6 +28,12 @@ public class ProposalDto {
 	}
 	public void setAccountId(Long accountId) {
 		this.accountId = accountId;
+	}
+	public String getFirstVersion() {
+		return firstVersion;
+	}
+	public void setFirstVersion(String firstVersion) {
+		this.firstVersion = firstVersion;
 	}
 	public List<EditionDto> getEditions() {
 		return editions;

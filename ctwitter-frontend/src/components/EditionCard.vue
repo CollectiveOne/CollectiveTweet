@@ -1,16 +1,22 @@
 <template lang="html">
-  <div class="card" draggable="true" @dragstart="dragStart()">
-    <div class="card-block">
-      <p class="text">
-        {{ edition.text }}
-      </p>
+  <div class="">
+    <div class="card" draggable="true" @dragstart="dragStart()">
+      <div class="card-block">
+        <p class="text">
+          {{ edition.text }}
+        </p>
+        <div class="toolbar">
+          <img @click="forkMe()" src="../assets/fork.png">
+        </div>
+      </div>
     </div>
+    <app-tweet-composer :textInit="originalTweet.text"
+      @ok="newEditionReceived($event)" @cancel="proposing = false"></app-tweet-composer>
   </div>
+
 </template>
 
 <script>
-import { mapMutations } from 'vuex'
-
 export default {
   components: {
   },
@@ -34,8 +40,9 @@ export default {
   },
 
   methods: {
-    ...mapMutations(['proposalSetEditionBeingDragged']),
-
+    forkMe () {
+      this.$emit('fork-me', this.edition)
+    },
     dragStart () {
       this.$emit('dragging-me', this.edition)
     }
@@ -54,28 +61,11 @@ export default {
   margin-bottom: 5px;
 }
 
-.account-card {
-  background-color: rgb(48, 67, 168);
-  color: white;
-  border-radius: 10px;
-}
-
-.account-card a {
-  color: white;
-}
-
-.toolbar {
-  overflow: auto;
-}
-
 .toolbar img {
   cursor: pointer;
   width: 25px;
   float: right;
 }
 
-.composer {
-  margin-top: 10px;
-}
 
 </style>

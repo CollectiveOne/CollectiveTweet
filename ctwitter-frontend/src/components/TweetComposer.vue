@@ -65,4 +65,9 @@ export default {
   margin-right: 3px;
 }
 
+.twitter-text-group textarea {
+  padding-top: 15px;
+  padding-left: 20px;
+}
+
 </style>

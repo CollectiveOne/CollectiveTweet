@@ -42,6 +42,7 @@ public class ProposalService {
     	
     	proposal.setCreatorId(userId);
     	proposal.setAccount(account);
+    	proposal.setFirstVersion(tweetDto.getText());
     	
     	edition.setCreatorId(userId);
     	edition.setProposal(proposal);
@@ -66,7 +67,12 @@ public class ProposalService {
 			if(userId != null) {
 				/* add rank info if userId is not null */
 				EditionRank myrank = editionRankRepository.findByEditionIdAndUserId(edition.getId(), userId);
-				editionDto.setMyRank(myrank.getRank());
+				if(myrank != null) {
+					editionDto.setMyRank(myrank.getRank());
+				} else {
+					editionDto.setMyRank(0);
+				} 
+					
 			}
 			
 			proposalDto.getEditions().add(editionDto);

@@ -16,12 +16,14 @@ public class Proposal {
 	private String creatorId;
 	@ManyToOne
 	private Account account;
+	private String firstVersion; 
 	
 	public ProposalDto toDto() {
 		ProposalDto dto = new ProposalDto();
 		
 		dto.setId(id);
 		dto.setCreatorId(creatorId);
+		dto.setFirstVersion(firstVersion);
 		dto.setAccountId(account.getId());
 		
 		return dto;
@@ -45,5 +47,12 @@ public class Proposal {
 	public void setAccount(Account account) {
 		this.account = account;
 	}
+	public String getFirstVersion() {
+		return firstVersion;
+	}
+	public void setFirstVersion(String firstVersion) {
+		this.firstVersion = firstVersion;
+	}
+	
 	
 }

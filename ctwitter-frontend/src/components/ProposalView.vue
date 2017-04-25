@@ -8,8 +8,8 @@
     <hr>
     <div class="row">
       <div class="col">
-        <app-tweet-composer v-if="proposing" class="composer"
-          textInit="" @ok="newEditionReceived($event)" @cancel="proposing = false"></app-tweet-composer>
+        <app-tweet-fork-form v-if="proposing" :originalTweet="originalTweetToEdit"
+          @editionProposed="newEdition($event)"></app-tweet-fork-form>
       </div>
     </div>
     <div class="row editions-container">
@@ -19,7 +19,7 @@
         <div class="ranking-dropzone no-go-dropzone" :class="{ 'dropping': draggingOverNoGo }">
           <app-edition-card
             v-for="edition in noGoEditions" class="edition-card"
-            :key="edition.id" :edition="edition"
+            :key="edition.id" :edition="edition" @fork-me="forkEdition($event)"
             @dragging-me="draggingEditionStart($event)"></app-edition-card>
         </div>
       </div>
@@ -29,7 +29,7 @@
         <div class="ranking-dropzone neutral-dropzone" :class="{ 'dropping': draggingOverNeutral }">
           <app-edition-card
             v-for="edition in neutralEditions" class="edition-card"
-            :key="edition.id" :edition="edition"
+            :key="edition.id" :edition="edition" @fork-me="forkEdition($event)"
             @dragging-me="draggingEditionStart($event)"></app-edition-card>
         </div>
       </div>
@@ -39,7 +39,7 @@
         <div class="ranking-dropzone go-dropzone" :class="{ 'dropping': draggingOverGo }">
           <app-edition-card
             v-for="edition in goEditions" class="edition-card"
-            :key="edition.id" :edition="edition"
+            :key="edition.id" :edition="edition" @fork-me="forkEdition($event)"
             @dragging-me="draggingEditionStart($event)"></app-edition-card>
           </div>
       </div>
@@ -49,19 +49,21 @@
 </template>
 
 <script>
-import TweetComposer from './TweetComposer.vue'
+import TweetForkForm from './TweetForkForm.vue'
 import EditionCard from './EditionCard.vue'
 
 export default {
   components: {
     AppEditionCard: EditionCard,
-    AppTweetComposer: TweetComposer
+    AppTweetForkForm: TweetForkForm
   },
 
   data () {
     return {
       id: 0,
       proposing: false,
+      originalTweetToEdit: null,
+      textInit: '',
       proposal: null,
       draggingOverNoGo: false,
       draggingOverNeutral: false,
@@ -70,54 +72,71 @@ export default {
     }
   },
 
-  methods: {
-    dropOnNoGo () {
-      this.draggingOverNoGo = false
-      let edition = this.proposal.editions.find(e => { return e.id === this.draggingEdition.id })
-      edition.myvote = 'nogo'
-      this.updateEdition(edition)
-    },
-
-    dropOnNeutral () {
-      this.draggingOverNeutral = false
-      let edition = this.proposal.editions.find(e => { return e.id === this.draggingEdition.id })
-      edition.myvote = 'neutral'
-      this.updateEdition(edition)
-    },
-
-    dropOnGo () {
-      this.draggingOverGo = false
-      let edition = this.proposal.editions.find(e => { return e.id === this.draggingEdition.id })
-      edition.myvote = 'go'
-      this.updateEdition(edition)
-    },
-
-    draggingEditionStart (edition) {
-      this.draggingEdition = edition
-    }
-  },
-
   computed: {
     goEditions () {
       if (this.proposal) {
-        return this.proposal.editions.filter(e => { return e.myvote === 'go' })
+        return this.proposal.editions.filter(e => { return e.myRank > 0 })
       } else {
         return []
       }
     },
     neutralEditions () {
       if (this.proposal) {
-        return this.proposal.editions.filter(e => { return e.myvote === 'neutral' })
+        return this.proposal.editions.filter(e => { return e.myRank === 0 })
       } else {
         return []
       }
     },
     noGoEditions () {
       if (this.proposal) {
-        return this.proposal.editions.filter(e => { return e.myvote === 'nogo' })
+        return this.proposal.editions.filter(e => { return e.myRank < 0 })
       } else {
         return []
       }
+    }
+  },
+
+  methods: {
+    dropOnNoGo () {
+      this.draggingOverNoGo = false
+      let edition = this.proposal.editions.find(e => { return e.id === this.draggingEdition.id })
+      edition.myRank = -1
+      this.updateEdition(edition)
+    },
+
+    dropOnNeutral () {
+      this.draggingOverNeutral = false
+      let edition = this.proposal.editions.find(e => { return e.id === this.draggingEdition.id })
+      edition.myRank = 0
+      this.updateEdition(edition)
+    },
+
+    dropOnGo () {
+      this.draggingOverGo = false
+      let edition = this.proposal.editions.find(e => { return e.id === this.draggingEdition.id })
+      edition.myRank = 1
+      this.updateEdition(edition)
+    },
+
+    draggingEditionStart (edition) {
+      this.draggingEdition = edition
+    },
+
+    newEdition (edition) {
+      this.axios.post('/1/secured/proposal/' + this.proposal.id + '/edition', edition)
+    },
+
+    updateEdition (edition) {
+      this.axios.put('/1/secured/proposal/' + this.proposal.id + '/edition/' + edition.id + '/rank', {}, {
+        params: {
+          'myRank': edition.myRank
+        }
+      })
+    },
+
+    forkEdition (edition) {
+      this.originalTweetToEdit = edition
+      this.proposing = true
     }
   },
 

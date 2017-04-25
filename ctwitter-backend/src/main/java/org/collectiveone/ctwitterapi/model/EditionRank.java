@@ -4,7 +4,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
 @Entity
@@ -14,9 +13,7 @@ public class EditionRank {
 	private Long id;
 	@ManyToOne
 	private Edition edition;
-	@ManyToOne
 	private int rank;
-	@ManyToMany
 	private String userId;
 	
 	public Long getId() {
