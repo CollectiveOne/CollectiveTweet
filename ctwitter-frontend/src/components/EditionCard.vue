@@ -1,24 +1,27 @@
 <template lang="html">
-  <div class="">
+  <div>
     <div class="card" draggable="true" @dragstart="dragStart()">
       <div class="card-block">
         <p class="text">
           {{ edition.text }}
         </p>
         <div class="toolbar">
-          <img @click="forkMe()" src="../assets/fork.png">
+          <img @click="proposing = true" src="../assets/fork.png">
         </div>
       </div>
     </div>
-    <app-tweet-composer :textInit="originalTweet.text"
-      @ok="newEditionReceived($event)" @cancel="proposing = false"></app-tweet-composer>
+    <app-tweet-composer v-if="proposing" :textInit="edition.text"
+      @ok="newEditionProposed($event)" @cancel="proposing = false"></app-tweet-composer>
   </div>
 
 </template>
 
 <script>
+import TweetComposer from './TweetComposer.vue'
+
 export default {
   components: {
+    AppTweetComposer: TweetComposer
   },
 
   props: {
@@ -40,9 +43,11 @@ export default {
   },
 
   methods: {
-    forkMe () {
-      this.$emit('fork-me', this.edition)
+    newEditionProposed (edition) {
+      this.$emit('newEditionProposed', edition)
+      this.proposing = false
     },
+
     dragStart () {
       this.$emit('dragging-me', this.edition)
     }
@@ -51,6 +56,16 @@ export default {
 </script>
 
 <style scoped>
+
+.card {
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+  background-color: rgb(236, 236, 236);
+
+  box-shadow: 1px 2px 4px rgba(0, 0, 0, .5);
+  padding: 10px;
+  background: white;
+}
 
 .card-block {
   padding-top: 10px;
@@ -63,7 +78,7 @@ export default {
 
 .toolbar img {
   cursor: pointer;
-  width: 25px;
+  width: 15px;
   float: right;
 }
 

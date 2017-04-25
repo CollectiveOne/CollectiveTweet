@@ -19,7 +19,7 @@
         <div class="ranking-dropzone no-go-dropzone" :class="{ 'dropping': draggingOverNoGo }">
           <app-edition-card
             v-for="edition in noGoEditions" class="edition-card"
-            :key="edition.id" :edition="edition" @fork-me="forkEdition($event)"
+            :key="edition.id" :edition="edition" @newEditionProposed="newEdition($event)"
             @dragging-me="draggingEditionStart($event)"></app-edition-card>
         </div>
       </div>
@@ -29,7 +29,7 @@
         <div class="ranking-dropzone neutral-dropzone" :class="{ 'dropping': draggingOverNeutral }">
           <app-edition-card
             v-for="edition in neutralEditions" class="edition-card"
-            :key="edition.id" :edition="edition" @fork-me="forkEdition($event)"
+            :key="edition.id" :edition="edition" @newEditionProposed="newEdition($event)"
             @dragging-me="draggingEditionStart($event)"></app-edition-card>
         </div>
       </div>
@@ -39,7 +39,7 @@
         <div class="ranking-dropzone go-dropzone" :class="{ 'dropping': draggingOverGo }">
           <app-edition-card
             v-for="edition in goEditions" class="edition-card"
-            :key="edition.id" :edition="edition" @fork-me="forkEdition($event)"
+            :key="edition.id" :edition="edition" @newEditionProposed="newEdition($event)"
             @dragging-me="draggingEditionStart($event)"></app-edition-card>
           </div>
       </div>
@@ -49,13 +49,11 @@
 </template>
 
 <script>
-import TweetForkForm from './TweetForkForm.vue'
 import EditionCard from './EditionCard.vue'
 
 export default {
   components: {
-    AppEditionCard: EditionCard,
-    AppTweetForkForm: TweetForkForm
+    AppEditionCard: EditionCard
   },
 
   data () {
@@ -123,7 +121,13 @@ export default {
     },
 
     newEdition (edition) {
-      this.axios.post('/1/secured/proposal/' + this.proposal.id + '/edition', edition)
+      this.axios.post('/1/secured/proposal/' + this.proposal.id + '/edition', edition, {
+        params: {
+          parentId: 0
+        }
+      }).then((response) => {
+        this.updateData()
+      })
     },
 
     updateEdition (edition) {
@@ -134,16 +138,15 @@ export default {
       })
     },
 
-    forkEdition (edition) {
-      this.originalTweetToEdit = edition
-      this.proposing = true
+    updateData () {
+      this.axios.get('1/secured/proposal/' + this.$route.params.id).then((response) => {
+        this.proposal = response.data
+      })
     }
   },
 
   created () {
-    this.axios.get('1/secured/proposal/' + this.$route.params.id).then((response) => {
-      this.proposal = response.data
-    })
+    this.updateData()
   }
 }
 </script>
