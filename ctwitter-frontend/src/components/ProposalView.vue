@@ -122,6 +122,7 @@ export default {
     },
 
     dropOnEdition (event) {
+      debugger
       let droppedInEditionId = parseInt(event.currentTarget.attributes['data-edition-id'].value)
       let droppedInEdition = this.getEditionById(droppedInEditionId)
       let draggingEdition = this.getEditionById(this.draggingEdition.id)
@@ -145,23 +146,29 @@ export default {
       var droppedInZoneType = event.currentTarget.attributes['data-zone-type'].value
       event.currentTarget.classList.remove('empty-drop-zone-over')
 
-      var newRank = 0
+      var lastRank = 0
       switch (droppedInZoneType) {
         case 'NOGO':
-          newRank = this.getNoGoLastRank() + 1
+          lastRank = this.getNoGoLastRank()
           break
         case 'NEUTRAL':
-          newRank = this.getNeutralLastRank() + 1
+          lastRank = this.getNeutralLastRank()
           break
         case 'GO':
-          newRank = this.getGoLastRank() + 1
+          lastRank = this.getGoLastRank()
           break
       }
 
       var edition = this.getEditionById(this.draggingEdition.id)
       this.removeEditionFromZone(edition)
 
-      edition.myRank = newRank
+      if (this.draggingEdition.myRankType === droppedInZoneType) {
+        /* dropping within the same list */
+        edition.myRank = lastRank
+      } else {
+        edition.myRank = lastRank + 1
+      }
+
       edition.myRankType = droppedInZoneType
       this.rankEdition(edition)
     },
@@ -170,8 +177,6 @@ export default {
       /* move editions below upwards */
       var editionsBelow = this.proposal.editions.filter(e => { return ((e.myRank > edition.myRank) && (e.myRankType === edition.myRankType)) })
       editionsBelow.forEach(e => { e.myRank-- })
-      /* remove this edition from that list */
-      edition.myRankType = ''
     },
 
     getNoGoLastRank () {
