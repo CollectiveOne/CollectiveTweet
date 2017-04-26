@@ -49,8 +49,25 @@ const actions = {
     context.dispatch('updateProfile')
   },
 
-  updateProfile: ({ commit }) => {
-    updateProfileHelper(commit)
+  updateProfile: (context) => {
+    /* user profile */
+    if (context.getters.authenticated) {
+      lock.getUserInfo(localStorage.getItem('access_token'), (error, profile) => {
+        if (error) {
+          return
+        }
+        context.commit('setProfile', profile)
+      })
+
+      /* accounts data */
+      Vue.axios.get('/1/secured/account/mines').then((response) => {
+        context.commit('setAccounts', response.data)
+      }).catch((error) => {
+        if (error.response.status === 401) {
+          context.dispatch('logout')
+        }
+      })
+    }
   },
 
   logout: ({ commit }) => {
@@ -59,23 +76,6 @@ const actions = {
     commit('authenticate', false)
     commit('setProfile', null)
   }
-}
-
-const updateProfileHelper = (commit) => {
-  /* user profile */
-  if (localStorage.getItem('access_token')) {
-    lock.getUserInfo(localStorage.getItem('access_token'), (error, profile) => {
-      if (error) {
-        return
-      }
-      commit('setProfile', profile)
-    })
-  }
-
-  /* accounts data */
-  Vue.axios.get('/1/secured/account/mines').then((response) => {
-    commit('setAccounts', response.data)
-  })
 }
 
 export default {

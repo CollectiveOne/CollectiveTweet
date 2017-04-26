@@ -29,17 +29,11 @@ export default {
 
   methods: {
     ...mapGetters(['profileImage', 'userNickname']),
-    ...mapActions(['logout']),
+    ...mapActions(['logout'])
+  },
 
-    getRecentTweets () {
-      this.axios.get('/1/secured/account/1/recentTweets', {
-        headers: {
-          'Authorization': 'Bearer ' + localStorage.getItem('id_token')
-        }
-      }).then((response) => {
-        this.recentTweets = response.data
-      })
-    }
+  mounted () {
+    this.$router.push('Home')
   }
 }
 </script>
