@@ -122,24 +122,19 @@ export default {
     },
 
     dropOnEdition (event) {
-      debugger
-      let droppedInEditionId = parseInt(event.currentTarget.attributes['data-edition-id'].value)
-      let droppedInEdition = this.getEditionById(droppedInEditionId)
-      let draggingEdition = this.getEditionById(this.draggingEdition.id)
+      var droppedInEditionId = parseInt(event.currentTarget.attributes['data-edition-id'].value)
+      var droppedInEdition = this.getEditionById(droppedInEditionId)
+      var draggingEdition = this.getEditionById(this.draggingEdition.id)
 
-      if (droppedInEdition.myRank === 0) {
-        draggingEdition.myRank = 0
-        this.rankEdition(draggingEdition)
-      }
+      var newRank = droppedInEdition.myRank
+      var newRankType = droppedInEdition.myRankType
 
-      if (droppedInEdition.myRank > 0) {
-        var editionsBelow = this.proposal.editions.filter(e => { return e.myRank >= droppedInEdition.myRank })
-        draggingEdition.myRank = droppedInEdition.myRank
+      this.removeEditionFromZone(draggingEdition)
+      this.moveEditionDown(droppedInEdition)
 
-        editionsBelow.forEach(e => { e.myRank++ })
-        editionsBelow.forEach(e => { this.rankEdition(e) })
-        this.rankEdition(draggingEdition)
-      }
+      draggingEdition.myRank = newRank
+      draggingEdition.myRankType = newRankType
+      this.saveRankEdition(draggingEdition)
     },
 
     dropOnZone (event) {
@@ -170,13 +165,21 @@ export default {
       }
 
       edition.myRankType = droppedInZoneType
-      this.rankEdition(edition)
+      this.saveRankEdition(edition)
     },
 
     removeEditionFromZone (edition) {
       /* move editions below upwards */
       var editionsBelow = this.proposal.editions.filter(e => { return ((e.myRank > edition.myRank) && (e.myRankType === edition.myRankType)) })
       editionsBelow.forEach(e => { e.myRank-- })
+      editionsBelow.forEach(e => { this.saveRankEdition(e) })
+    },
+
+    moveEditionDown (edition) {
+      /* move this and editions below down */
+      var editionsBelow = this.proposal.editions.filter(e => { return ((e.myRank >= edition.myRank) && (e.myRankType === edition.myRankType)) })
+      editionsBelow.forEach(e => { e.myRank++ })
+      editionsBelow.forEach(e => { this.saveRankEdition(e) })
     },
 
     getNoGoLastRank () {
@@ -214,7 +217,7 @@ export default {
       })
     },
 
-    rankEdition (edition) {
+    saveRankEdition (edition) {
       this.axios.put('/1/secured/proposal/' + this.proposal.id + '/edition/' + edition.id + '/rank', {}, {
         params: {
           'myRank': edition.myRank,
