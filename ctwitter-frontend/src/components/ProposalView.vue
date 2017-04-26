@@ -233,10 +233,19 @@ export default {
   margin-top: 20px;
 }
 
+.editions-container {
+}
+
+.ranking-column {
+  min-height: 500px;
+}
+
 .ranking-dropzone {
+  min-height: 500px;
+  display: flex;
+  flex-direction: column;
   padding: 15px;
   width: 100%;
-  height: 100%;
   border-style: dotted;
   border-radius: 10px;
   border-width: thick;
@@ -248,8 +257,12 @@ export default {
 }
 
 .empty-drop-zone {
-  width: 100%;
-  height: 100%;
+  flex-grow: 1;
+  min-height: 50px;
+}
+
+.edition-card {
+  flex-grow: 0;
 }
 
 .empty-drop-zone-over {
@@ -266,10 +279,6 @@ export default {
 
 .no-go-dropzone {
   border-color: rgb(255, 84, 84);
-}
-
-.edition-card {
-  margin-bottom: 10px;
 }
 
 </style>
