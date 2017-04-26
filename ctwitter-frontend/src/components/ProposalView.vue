@@ -168,9 +168,10 @@ export default {
 
     removeEditionFromZone (edition) {
       /* move editions below upwards */
-      edition.myRankType = ''
       var editionsBelow = this.proposal.editions.filter(e => { return ((e.myRank > edition.myRank) && (e.myRankType === edition.myRankType)) })
       editionsBelow.forEach(e => { e.myRank-- })
+      /* remove this edition from that list */
+      edition.myRankType = ''
     },
 
     getNoGoLastRank () {
