@@ -1,5 +1,5 @@
 <template lang="html">
-  <div>
+  <div  @dragover.prevent @dragenter="$emit('ed-dragenter',$event)" @dragleave="$emit('ed-dragleave',$event)" @drop="$emit('ed-drop',$event)">
     <div class="card" draggable="true" @dragstart="dragStart()">
       <div class="card-block">
         <p class="text">
@@ -7,6 +7,7 @@
         </p>
         <div class="toolbar">
           <img @click="proposing = true" src="../assets/fork.png">
+          <div class="badge badge-primary">{{ edition.myRank }}</div>
         </div>
       </div>
     </div>
@@ -74,6 +75,11 @@ export default {
 
 .card-block p {
   margin-bottom: 5px;
+}
+
+.toolbar .badge {
+  float: right;
+  margin-right: 10px;
 }
 
 .toolbar img {

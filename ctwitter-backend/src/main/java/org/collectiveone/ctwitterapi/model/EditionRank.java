@@ -1,6 +1,8 @@
 package org.collectiveone.ctwitterapi.model;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,6 +15,8 @@ public class EditionRank {
 	private Long id;
 	@ManyToOne
 	private Edition edition;
+	@Enumerated(EnumType.STRING)
+	private EditionRankType rankType;
 	private int rank;
 	private String userId;
 	
@@ -27,6 +31,12 @@ public class EditionRank {
 	}
 	public void setEdition(Edition edition) {
 		this.edition = edition;
+	}
+	public EditionRankType getRankType() {
+		return rankType;
+	}
+	public void setRankType(EditionRankType rankType) {
+		this.rankType = rankType;
 	}
 	public int getRank() {
 		return rank;

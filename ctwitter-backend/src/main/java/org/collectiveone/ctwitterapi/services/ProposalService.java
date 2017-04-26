@@ -10,6 +10,7 @@ import org.collectiveone.ctwitterapi.dtos.TweetDto;
 import org.collectiveone.ctwitterapi.model.Account;
 import org.collectiveone.ctwitterapi.model.Edition;
 import org.collectiveone.ctwitterapi.model.EditionRank;
+import org.collectiveone.ctwitterapi.model.EditionRankType;
 import org.collectiveone.ctwitterapi.model.Proposal;
 import org.collectiveone.ctwitterapi.repositories.AccountRepositoryIf;
 import org.collectiveone.ctwitterapi.repositories.EditionRankRepositoryIf;
@@ -68,11 +69,12 @@ public class ProposalService {
 				/* add rank info if userId is not null */
 				EditionRank myrank = editionRankRepository.findByEditionIdAndUserId(edition.getId(), userId);
 				if(myrank != null) {
+					editionDto.setMyRankType(myrank.getRankType().toString());
 					editionDto.setMyRank(myrank.getRank());
 				} else {
+					editionDto.setMyRankType(EditionRankType.NEUTRAL.toString());
 					editionDto.setMyRank(0);
 				} 
-					
 			}
 			
 			proposalDto.getEditions().add(editionDto);
@@ -101,7 +103,7 @@ public class ProposalService {
 	}
 	
 	@Transactional
-	public String rankEdition(String userId, Long proposalId, Long editionId, int rank) {
+	public String rankEdition(String userId, Long proposalId, Long editionId, int rank, EditionRankType rankType) {
 		
 		EditionRank myrank = editionRankRepository.findByEditionIdAndUserId(editionId, userId);
     	
@@ -112,6 +114,7 @@ public class ProposalService {
     		myrank.setUserId(userId);
     	}
     	
+    	myrank.setRankType(rankType);
     	myrank.setRank(rank);
     	editionRankRepository.save(myrank);
     	

@@ -2,6 +2,7 @@ package org.collectiveone.ctwitterapi.controllers;
 
 import org.collectiveone.ctwitterapi.dtos.ProposalDto;
 import org.collectiveone.ctwitterapi.dtos.TweetDto;
+import org.collectiveone.ctwitterapi.model.EditionRankType;
 import org.collectiveone.ctwitterapi.services.ProposalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -64,13 +65,16 @@ public class ProposalsController {
     public String rankEdition(
     		@PathVariable("pId") Long proposalId, 
     		@PathVariable("eId") Long editionId,
-    		@RequestParam("myRank") int rank
+    		@RequestParam("myRank") int rank,
+    		@RequestParam("myRankType") String rankTypeString
     		) {
 		
     	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     	
     	if(auth.isAuthenticated()) {
-        	proposalService.rankEdition(auth.getName(), proposalId, editionId, rank);
+    		EditionRankType rankType = EditionRankType.valueOf(rankTypeString);
+    		
+        	proposalService.rankEdition(auth.getName(), proposalId, editionId, rank, rankType);
         	return "success";
     	}
     	

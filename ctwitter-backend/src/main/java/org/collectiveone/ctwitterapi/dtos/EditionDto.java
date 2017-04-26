@@ -6,6 +6,7 @@ public class EditionDto {
 	private Long proposalId;
 	private Long parentId;
 	private String text;
+	private String myRankType;
 	private Integer myRank;
 	
 	public Long getId() {
@@ -37,6 +38,12 @@ public class EditionDto {
 	}
 	public void setText(String text) {
 		this.text = text;
+	}
+	public String getMyRankType() {
+		return myRankType;
+	}
+	public void setMyRankType(String myRankType) {
+		this.myRankType = myRankType;
 	}
 	public Integer getMyRank() {
 		return myRank;

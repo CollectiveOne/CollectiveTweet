@@ -8,7 +8,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 import com.auth0.spring.security.api.JwtWebSecurityConfigurer;
 
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity(debug = false)
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 

@@ -30,10 +30,6 @@ export default {
   methods: {
     ...mapGetters(['profileImage', 'userNickname']),
     ...mapActions(['logout'])
-  },
-
-  mounted () {
-    this.$router.push('Home')
   }
 }
 </script>

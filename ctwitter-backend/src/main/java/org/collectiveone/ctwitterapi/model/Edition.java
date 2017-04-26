@@ -33,6 +33,9 @@ public class Edition {
 		if(parent != null) dto.setParentId(parent.getId());
 		dto.setProposalId(proposal.getId());
 		dto.setText(text);
+		
+		/* these are set outside if the user is specified */
+		dto.setMyRankType(EditionRankType.NEUTRAL.toString());
 		dto.setMyRank(0);
 		
 		return dto;
