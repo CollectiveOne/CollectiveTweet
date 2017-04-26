@@ -7,7 +7,7 @@
         </p>
         <div class="toolbar">
           <img @click="proposing = true" src="../assets/fork.png">
-          <div class="badge badge-primary">{{ edition.myRank }}</div>
+          <div v-if="edition.myRankType !== 'NOTRANKED'" class="badge badge-primary">{{ edition.myRank }}</div>
         </div>
       </div>
     </div>

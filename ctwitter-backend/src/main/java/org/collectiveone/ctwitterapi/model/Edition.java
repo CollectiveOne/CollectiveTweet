@@ -35,7 +35,7 @@ public class Edition {
 		dto.setText(text);
 		
 		/* these are set outside if the user is specified */
-		dto.setMyRankType(EditionRankType.NEUTRAL.toString());
+		dto.setMyRankType(EditionRankType.NOTRANKED.toString());
 		dto.setMyRank(0);
 		
 		return dto;

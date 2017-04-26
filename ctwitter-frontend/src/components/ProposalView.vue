@@ -34,6 +34,11 @@
             :key="edition.id" :edition="edition" @newEditionProposed="newEdition($event)"
             @dragging-me="draggingEditionStart($event)" @ed-drop="dropOnEdition($event)">
           </app-edition-card>
+          <app-edition-card
+            v-for="edition in nonRankedEditions" class="edition-card" :data-edition-id="edition.id"
+            :key="edition.id" :edition="edition" @newEditionProposed="newEdition($event)"
+            @dragging-me="draggingEditionStart($event)" @ed-drop="dropOnEdition($event)">
+          </app-edition-card>
           <div class="empty-drop-zone" data-zone-type="NEUTRAL"
             @dragover.prevent @dragenter="dragEnterDropZone($event)" @dragleave="dragLeaveDropZone($event)" @drop="dropOnZone($event)">
           </div>
@@ -52,7 +57,6 @@
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </template>
@@ -87,28 +91,16 @@ export default {
 
   computed: {
     goEditions () {
-      if (this.proposal) {
-        let editions = this.proposal.editions.filter(e => { return e.myRankType === 'GO' })
-        return editions.sort(sortByMyRank)
-      } else {
-        return []
-      }
+      return this.proposal ? this.proposal.editions.filter(e => { return e.myRankType === 'GO' }).sort(sortByMyRank) : []
     },
     neutralEditions () {
-      if (this.proposal) {
-        let editions = this.proposal.editions.filter(e => { return e.myRankType === 'NEUTRAL' })
-        return editions.sort(sortByMyRank)
-      } else {
-        return []
-      }
+      return this.proposal ? this.proposal.editions.filter(e => { return e.myRankType === 'NEUTRAL' }).sort(sortByMyRank) : []
+    },
+    nonRankedEditions () {
+      return this.proposal ? this.proposal.editions.filter(e => { return e.myRankType === 'NOTRANKED' }) : []
     },
     noGoEditions () {
-      if (this.proposal) {
-        let editions = this.proposal.editions.filter(e => { return e.myRankType === 'NOGO' })
-        return editions.sort(sortByMyRank)
-      } else {
-        return []
-      }
+      return this.proposal ? this.proposal.editions.filter(e => { return e.myRankType === 'NOGO' }).sort(sortByMyRank) : []
     }
   },
 
@@ -184,27 +176,15 @@ export default {
 
     getNoGoLastRank () {
       var last = this.noGoEditions.slice(-1)[0]
-      if (last) {
-        return last.myRank
-      } else {
-        return 0
-      }
+      return last ? last.myRank : 0
     },
     getNeutralLastRank () {
       var last = this.neutralEditions.slice(-1)[0]
-      if (last) {
-        return last.myRank
-      } else {
-        return 0
-      }
+      return last ? last.myRank : 0
     },
     getGoLastRank () {
       var last = this.goEditions.slice(-1)[0]
-      if (last) {
-        return last.myRank
-      } else {
-        return 0
-      }
+      return last ? last.myRank : 0
     },
 
     newEdition (edition) {

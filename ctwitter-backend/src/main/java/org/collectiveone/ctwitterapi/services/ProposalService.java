@@ -72,7 +72,7 @@ public class ProposalService {
 					editionDto.setMyRankType(myrank.getRankType().toString());
 					editionDto.setMyRank(myrank.getRank());
 				} else {
-					editionDto.setMyRankType(EditionRankType.NEUTRAL.toString());
+					editionDto.setMyRankType(EditionRankType.NOTRANKED.toString());
 					editionDto.setMyRank(0);
 				} 
 			}
