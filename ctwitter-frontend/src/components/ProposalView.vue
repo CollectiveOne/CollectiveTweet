@@ -1,5 +1,5 @@
 <template lang="html">
-  <div class="col account-view">
+  <div class="col proposal-view">
     <div class="row header">
       <div class="col">
         <h1>Proposal</h1>
@@ -113,20 +113,82 @@ export default {
       this.draggingEdition = edition
     },
 
+    updateRanksAndSave () {
+      /* see what editions have a new rank and save them */
+      this.proposal.editions.forEach(e => {
+        if (e.update) {
+          e.update = false
+          this.saveRankEdition(e)
+        }
+      })
+    },
+
     dropOnEdition (event) {
+      debugger
       var droppedInEditionId = parseInt(event.currentTarget.attributes['data-edition-id'].value)
       var droppedInEdition = this.getEditionById(droppedInEditionId)
       var draggingEdition = this.getEditionById(this.draggingEdition.id)
 
-      var newRank = droppedInEdition.myRank
-      var newRankType = droppedInEdition.myRankType
+      // TODO: This can be probably simplified... I couldn't
+      if (draggingEdition.myRankType !== droppedInEdition.myRankType) {
+        /* if dropping from one column to another */
+        /* move editions below dragging edition up */
+        var editionsBelowDragged = this.proposal.editions.filter(
+            e => { return ((e.myRank > draggingEdition.myRank) && (e.myRankType === draggingEdition.myRankType)) })
+        editionsBelowDragged.forEach(e => {
+          e.myRank = e.myRank - 1
+          e.update = true
+        })
 
-      this.removeEditionFromZone(draggingEdition)
-      this.moveEditionDown(droppedInEdition)
+        /* move on dropped edition and those below down */
+        var originalDroppedRank = droppedInEdition.myRank
+        var editionsBelowDropped = this.proposal.editions.filter(
+          e => { return ((e.myRank >= droppedInEdition.myRank) && (e.myRankType === droppedInEdition.myRankType)) })
+        editionsBelowDropped.forEach(e => {
+          e.myRank = e.myRank + 1
+          e.update = true
+        })
 
-      draggingEdition.myRank = newRank
-      draggingEdition.myRankType = newRankType
-      this.saveRankEdition(draggingEdition)
+        draggingEdition.myRank = originalDroppedRank
+        draggingEdition.myRankType = droppedInEdition.myRankType
+        draggingEdition.update = true
+      } else if (droppedInEdition.myRank > draggingEdition.myRank) {
+        /* if dropping within the same column below the one being dragged */
+
+        /* move editions below dragged edition and at and above droppedInEdition
+          up */
+        var originalDropedRank = droppedInEdition.myRank
+        var editionsBelowDraggedAndAboveDropped = this.proposal.editions.filter(
+          e => { return ((e.myRank > draggingEdition.myRank) && (e.myRank <= droppedInEdition.myRank) && (e.myRankType === draggingEdition.myRankType)) })
+        editionsBelowDraggedAndAboveDropped.forEach(e => {
+          e.myRank = e.myRank - 1
+          e.update = true
+        })
+
+        /* set draggedEdition rank equal to the one dropped */
+        draggingEdition.myRank = originalDropedRank
+        draggingEdition.myRankType = droppedInEdition.myRankType
+        draggingEdition.update = true
+      } else if (droppedInEdition.myRank < draggingEdition.myRank) {
+        /* if dropping within the same column above the one being dragged */
+        /* store the rank of the dropped in edition */
+        var dropInEditionOriginalRank = droppedInEdition.myRank
+        /* move editions above dragged edition and at and below droppedInEditione
+          down */
+        var editionsAboveDraggedAndBelowDropped = this.proposal.editions.filter(
+          e => { return ((e.myRank >= dropInEditionOriginalRank) && (e.myRank < draggingEdition.myRank) && (e.myRankType === draggingEdition.myRankType)) })
+        editionsAboveDraggedAndBelowDropped.forEach(e => {
+          e.myRank = e.myRank + 1
+          e.update = true
+        })
+
+        /* set draggedEdition rank equal to the one dropped */
+        draggingEdition.myRank = dropInEditionOriginalRank
+        draggingEdition.myRankType = droppedInEdition.myRankType
+        draggingEdition.update = true
+      }
+
+      this.updateRanksAndSave()
     },
 
     dropOnZone (event) {
@@ -147,7 +209,14 @@ export default {
       }
 
       var edition = this.getEditionById(this.draggingEdition.id)
-      this.removeEditionFromZone(edition)
+
+      /* move editions below dragging edition up */
+      var editionsBelowDragged = this.proposal.editions.filter(
+          e => { return ((e.myRank > edition.myRank) && (e.myRankType === edition.myRankType)) })
+      editionsBelowDragged.forEach(e => {
+        e.myRank = e.myRank - 1
+        e.update = true
+      })
 
       if (this.draggingEdition.myRankType === droppedInZoneType) {
         /* dropping within the same list */
@@ -157,21 +226,8 @@ export default {
       }
 
       edition.myRankType = droppedInZoneType
-      this.saveRankEdition(edition)
-    },
-
-    removeEditionFromZone (edition) {
-      /* move editions below upwards */
-      var editionsBelow = this.proposal.editions.filter(e => { return ((e.myRank > edition.myRank) && (e.myRankType === edition.myRankType)) })
-      editionsBelow.forEach(e => { e.myRank-- })
-      editionsBelow.forEach(e => { this.saveRankEdition(e) })
-    },
-
-    moveEditionDown (edition) {
-      /* move this and editions below down */
-      var editionsBelow = this.proposal.editions.filter(e => { return ((e.myRank >= edition.myRank) && (e.myRankType === edition.myRankType)) })
-      editionsBelow.forEach(e => { e.myRank++ })
-      editionsBelow.forEach(e => { this.saveRankEdition(e) })
+      edition.update = true
+      this.updateRanksAndSave(edition)
     },
 
     getNoGoLastRank () {
@@ -229,7 +285,7 @@ export default {
 
 <style scoped>
 
-.account-view {
+.proposal-view {
   margin-top: 20px;
 }
 
