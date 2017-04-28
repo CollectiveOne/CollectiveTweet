@@ -1,5 +1,8 @@
 <template lang="html">
-  <div  @dragover.prevent @dragenter="$emit('ed-dragenter',$event)" @dragleave="$emit('ed-dragleave',$event)" @drop="$emit('ed-drop',$event)">
+  <div @dragover.prevent @dragenter="" @dragleave="" @drop="$emit('ed-drop',$event)">
+    <div v-if="draggingOver" class="dragging-over">
+      <hr>
+    </div>
     <div class="card" draggable="true" @dragstart="dragStart()">
       <div class="card-block">
         <p class="text">
@@ -39,7 +42,8 @@ export default {
 
   data () {
     return {
-      proposing: false
+      proposing: false,
+      draggingOver: false
     }
   },
 
@@ -51,6 +55,16 @@ export default {
 
     dragStart () {
       this.$emit('dragging-me', this.edition)
+    },
+
+    dragEnter () {
+      console.log('enter')
+      this.draggingOver = true
+    },
+
+    dragLeave () {
+      console.log('leave')
+      this.draggingOver = false
     }
   }
 }

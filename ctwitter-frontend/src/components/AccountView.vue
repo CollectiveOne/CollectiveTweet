@@ -9,10 +9,16 @@
     </div>
     <hr>
     <div class="row">
+      <div class="col btn-row">
+        <b-btn @click="proposeClick()" variant="primary">propose tweet</b-btn>
+        <app-user-selector class="user-selector"></app-user-selector>
+      </div>
+    </div>
+    <div class="row">
       <div class="col">
-        <b-btn v-if="!proposing" @click="proposeClick()" variant="primary">propose tweet</b-btn>
-        <app-tweet-composer v-if="proposing" class="composer" :accountId="account.id"
-          @ok="newProposalReceived($event)" @cancel="proposing = false"></app-tweet-composer>
+        <app-tweet-composer  v-if="proposing" class="composer" :accountId="account.id"
+          @ok="newProposalReceived($event)" @cancel="proposing = false">
+        </app-tweet-composer>
       </div>
     </div>
     <hr>
@@ -28,11 +34,13 @@
 
 import TweetComposer from './TweetComposer.vue'
 import TweetProposalCard from './TweetProposalCard.vue'
+import UserSelector from './UserSelector.vue'
 
 export default {
   components: {
     AppTweetComposer: TweetComposer,
-    AppTweetProposalCard: TweetProposalCard
+    AppTweetProposalCard: TweetProposalCard,
+    AppUserSelector: UserSelector
   },
 
   data () {
@@ -49,6 +57,10 @@ export default {
   methods: {
     proposeClick () {
       this.proposing = true
+    },
+
+    addUserClick () {
+      this.addingUser = true
     },
 
     newProposalReceived (data) {
@@ -81,6 +93,16 @@ export default {
   margin-top: 20px;
 }
 
+.btn-row button {
+  width: 155px;
+}
+
+.user-selector {
+  display: block;
+  width: 200px;
+  clear: none;
+}
+
 .composer {
   margin-top: 10px;
 }
@@ -88,5 +110,6 @@ export default {
 .proposals-container {
   margin-top: 20px;
 }
+
 
 </style>

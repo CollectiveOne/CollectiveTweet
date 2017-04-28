@@ -32,7 +32,8 @@
           <app-edition-card
             v-for="edition in neutralEditions" class="edition-card" :data-edition-id="edition.id"
             :key="edition.id" :edition="edition" @newEditionProposed="newEdition($event)"
-            @dragging-me="draggingEditionStart($event)" @ed-drop="dropOnEdition($event)">
+            @dragging-me="draggingEditionStart($event)" @ed-drop="dropOnEdition($event)"
+            @ed-dragenter="dragEnterEdition()">
           </app-edition-card>
           <app-edition-card
             v-for="edition in nonRankedEditions" class="edition-card" :data-edition-id="edition.id"
@@ -113,6 +114,10 @@ export default {
       this.draggingEdition = edition
     },
 
+    dragEnterEdition () {
+      console.log('enter')
+    },
+
     updateRanksAndSave () {
       /* see what editions have a new rank and save them */
       this.proposal.editions.forEach(e => {
@@ -124,7 +129,6 @@ export default {
     },
 
     dropOnEdition (event) {
-      debugger
       var droppedInEditionId = parseInt(event.currentTarget.attributes['data-edition-id'].value)
       var droppedInEdition = this.getEditionById(droppedInEditionId)
       var draggingEdition = this.getEditionById(this.draggingEdition.id)
