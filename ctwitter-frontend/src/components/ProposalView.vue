@@ -161,6 +161,8 @@ export default {
       /* since the droppedIn edition was moved down, add 1 */
       this.draggingEdition.myRank = droppedInEdition.myRank - 1
       this.draggingEdition.myRankType = droppedInEdition.myRankType
+      this.draggingEdition.update = true
+
       /* save all modified editions in server */
       this.updateRanksAndSave()
     },
