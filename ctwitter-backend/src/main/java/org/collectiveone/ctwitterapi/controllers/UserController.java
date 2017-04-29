@@ -69,7 +69,13 @@ public class UserController {
 		List<UserSuggestionDto> res = new ArrayList<UserSuggestionDto>();
 		
 		for(User user : response.getItems()) {
-			System.out.println(user.getName());
+			UserSuggestionDto suggestion = new UserSuggestionDto();
+			
+			suggestion.setId(user.getId());
+			suggestion.setPicture(user.getPicture());
+			suggestion.setNickname(user.getNickname());
+			
+			res.add(suggestion);
 		}
 		
 		return res;

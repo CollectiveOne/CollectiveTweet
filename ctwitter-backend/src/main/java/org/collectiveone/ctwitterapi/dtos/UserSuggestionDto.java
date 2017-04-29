@@ -2,8 +2,8 @@ package org.collectiveone.ctwitterapi.dtos;
 
 public class UserSuggestionDto {
 	private String id;
-	private String username;
-	private String profilePicUrl;
+	private String nickname;
+	private String picture;
 	
 	public String getId() {
 		return id;
@@ -11,16 +11,16 @@ public class UserSuggestionDto {
 	public void setId(String id) {
 		this.id = id;
 	}
-	public String getUsername() {
-		return username;
+	public String getNickname() {
+		return nickname;
 	}
-	public void setUsername(String username) {
-		this.username = username;
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
 	}
-	public String getProfilePicUrl() {
-		return profilePicUrl;
+	public String getPicture() {
+		return picture;
 	}
-	public void setProfilePicUrl(String profilePicUrl) {
-		this.profilePicUrl = profilePicUrl;
+	public void setPicture(String profilePicUrl) {
+		this.picture = profilePicUrl;
 	}
 }
