@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.collectiveone.ctwitterapi.dtos.AccountDto;
 import org.collectiveone.ctwitterapi.dtos.TweetDto;
+import org.collectiveone.ctwitterapi.dtos.UserThumbnailDto;
 import org.collectiveone.ctwitterapi.model.Account;
 import org.collectiveone.ctwitterapi.model.AccountState;
 import org.collectiveone.ctwitterapi.repositories.AccountRepositoryIf;
@@ -47,6 +48,11 @@ public class AccountController {
     @RequestMapping(path = "/{id}",  method = RequestMethod.GET)
     public AccountDto get(@PathVariable("id") Long id) {
     	return accountService.get(id);
+    }
+    
+    @RequestMapping(path = "/{id}/members",  method = RequestMethod.GET)
+    public List<UserThumbnailDto> getMembers(@PathVariable("id") Long id) {
+    	return accountService.getMembers(id);
     }
     
 	@RequestMapping(path = "{id}/tweet", method = RequestMethod.POST, produces = { MediaType.TEXT_HTML_VALUE })

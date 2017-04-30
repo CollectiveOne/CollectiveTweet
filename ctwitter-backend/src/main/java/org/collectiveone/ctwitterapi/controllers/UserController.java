@@ -3,7 +3,7 @@ package org.collectiveone.ctwitterapi.controllers;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.collectiveone.ctwitterapi.dtos.UserSuggestionDto;
+import org.collectiveone.ctwitterapi.dtos.UserThumbnailDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,7 +26,7 @@ public class UserController {
 	ManagementAPI mgmt;
 	
 	@RequestMapping(path = "/suggestions",  method = RequestMethod.GET)
-    public List<UserSuggestionDto> suggestions(@RequestParam("q") String q) {
+    public List<UserThumbnailDto> suggestions(@RequestParam("q") String q) {
 		
 		UserFilter filter = new UserFilter();
 		Request<UsersPage> mgmtRequest = mgmt.users().list(filter);
@@ -40,10 +40,10 @@ public class UserController {
 		    // request error
 		}
 		
-		List<UserSuggestionDto> res = new ArrayList<UserSuggestionDto>();
+		List<UserThumbnailDto> res = new ArrayList<UserThumbnailDto>();
 		
 		for(User user : response.getItems()) {
-			UserSuggestionDto suggestion = new UserSuggestionDto();
+			UserThumbnailDto suggestion = new UserThumbnailDto();
 			
 			suggestion.setId(user.getId());
 			suggestion.setPicture(user.getPicture());

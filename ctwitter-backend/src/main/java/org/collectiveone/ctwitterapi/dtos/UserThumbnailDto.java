@@ -1,6 +1,6 @@
 package org.collectiveone.ctwitterapi.dtos;
 
-public class UserSuggestionDto {
+public class UserThumbnailDto {
 	private String id;
 	private String nickname;
 	private String picture;

@@ -7,6 +7,14 @@
         </a>
       </div>
     </div>
+    <div class="row members">
+      <div class="col">
+        <div class="badge badge-default">{{ nMembers }} members:</div>
+        <div v-for="member in account.members">
+          <p>{{ member.nickname }}</p>
+        </div>
+      </div>
+    </div>
     <hr>
     <div class="row">
       <div class="col btn-row">
@@ -53,7 +61,18 @@ export default {
       account: {
         id: '0',
         twitterHandle: 'example',
-        proposals: []
+        proposals: [],
+        members: []
+      }
+    }
+  },
+
+  computed: {
+    nMembers () {
+      if (this.account.members) {
+        return this.account.members.length
+      } else {
+        return 0
       }
     }
   },
@@ -85,9 +104,20 @@ export default {
   },
 
   created () {
-    this.axios.get('1/secured/account/' + this.$route.params.id).then((response) => {
-      this.account = response.data
-    })
+    var _this = this
+
+    var getAccount = () => {
+      return _this.axios.get('1/secured/account/' + _this.$route.params.id)
+    }
+
+    var getAccountMembers = () => {
+      return _this.axios.get('1/secured/account/' + _this.$route.params.id + '/members')
+    }
+
+    this.axios.all([getAccount(), getAccountMembers()]).then(this.axios.spread((accountResponse, membersResponse) => {
+      this.account = accountResponse.data
+      this.account.members = membersResponse.data
+    }))
   }
 }
 </script>

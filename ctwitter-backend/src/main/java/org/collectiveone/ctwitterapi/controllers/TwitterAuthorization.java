@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.social.connect.Connection;
 import org.springframework.social.oauth1.AuthorizedRequestToken;
 import org.springframework.social.oauth1.OAuth1Operations;
 import org.springframework.social.oauth1.OAuth1Parameters;
@@ -62,6 +61,8 @@ public class TwitterAuthorization {
         account.setRequestToken(requestToken.getValue());
         account.setRequestTokenSecret(requestToken.getSecret());
 
+        account.getMembersIds().add(auth.getName());
+        
         accountRepository.save(account);
         
         return authorizeUrl;
