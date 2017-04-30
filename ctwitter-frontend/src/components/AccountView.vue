@@ -11,7 +11,11 @@
     <div class="row">
       <div class="col btn-row">
         <b-btn @click="proposeClick()" variant="primary">propose tweet</b-btn>
-        <app-user-selector class="user-selector"></app-user-selector>
+        <app-user-selector class="add-user-selector"
+          @select="addUserSelected($event)"
+          anchor="nickname" placeholder="add user"
+          url="/1/secured/user/suggestions">
+        </app-user-selector>
       </div>
     </div>
     <div class="row">
@@ -59,8 +63,13 @@ export default {
       this.proposing = true
     },
 
-    addUserClick () {
-      this.addingUser = true
+    addUserSelected (user) {
+      console.log(user)
+      // this.axios.post('/1/secured/account/addUser', {
+      //   params: {
+      //     userId: user.userId
+      //   }
+      // })
     },
 
     newProposalReceived (data) {
@@ -95,12 +104,14 @@ export default {
 
 .btn-row button {
   width: 155px;
+  float: left;
 }
 
-.user-selector {
-  display: block;
-  width: 200px;
-  clear: none;
+.add-user-selector {
+  float: right;
+  width: 250px;
+  margin-left: 10px;
+
 }
 
 .composer {
