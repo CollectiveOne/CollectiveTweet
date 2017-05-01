@@ -3,16 +3,15 @@ package org.collectiveone.ctwitterapi.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import org.collectiveone.ctwitterapi.dtos.AccountDto;
@@ -24,16 +23,15 @@ public class Account {
 	private Long id;
 	@Enumerated(EnumType.STRING)
 	private AccountState state;
-	private String creatorId;
+	@ManyToOne
+	private AppUser creator;
 	private String twitterHandle;
 	
 	@OneToMany(mappedBy="account")
 	private List<Proposal> proposals = new ArrayList<Proposal>();
 	
-	@ElementCollection
-	@CollectionTable(name="members_ids", joinColumns=@JoinColumn(name="account_id"))
-	@Column(name="member_id")
-	private List<String> membersIds = new ArrayList<String>();
+	@ManyToMany(cascade=CascadeType.ALL)
+	private List<AppUser> members = new ArrayList<AppUser>();
 	
 	private String requestToken;
 	private String requestTokenSecret;
@@ -45,7 +43,8 @@ public class Account {
 		
 		dto.setId(id);
 		dto.setTwitterHandle(twitterHandle);
-		dto.setCreatorId(creatorId);
+		dto.setCreatorId(creator.getId());
+		dto.setCreatorNickname(creator.getNickname());
 		
 		if(proposals != null) {
 			for(Proposal proposal : proposals) {
@@ -68,11 +67,11 @@ public class Account {
 	public void setState(AccountState state) {
 		this.state = state;
 	}
-	public String getCreatorId() {
-		return creatorId;
+	public AppUser getCreator() {
+		return creator;
 	}
-	public void setCreatorId(String creatorId) {
-		this.creatorId = creatorId;
+	public void setCreator(AppUser creator) {
+		this.creator = creator;
 	}
 	public String getTwitterHandle() {
 		return twitterHandle;
@@ -86,11 +85,11 @@ public class Account {
 	public void setProposals(List<Proposal> proposals) {
 		this.proposals = proposals;
 	}
-	public List<String> getMembersIds() {
-		return membersIds;
+	public List<AppUser> getMembers() {
+		return members;
 	}
-	public void setMembersIds(List<String> membersIds) {
-		this.membersIds = membersIds;
+	public void setMembers(List<AppUser> members) {
+		this.members = members;
 	}
 
 	public String getRequestToken() {

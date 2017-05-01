@@ -5,7 +5,7 @@ import java.util.List;
 
 public class ProposalDto {
 	private Long id;
-	private String creatorId;
+	private Long creatorId;
 	private Long accountId;
 	private String firstVersion;
 	private List<EditionDto> editions = new ArrayList<EditionDto>();
@@ -17,10 +17,10 @@ public class ProposalDto {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public String getCreatorId() {
+	public Long getCreatorId() {
 		return creatorId;
 	}
-	public void setCreatorId(String creatorId) {
+	public void setCreatorId(Long creatorId) {
 		this.creatorId = creatorId;
 	}
 	public Long getAccountId() {

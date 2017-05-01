@@ -1,5 +1,4 @@
 import Vue from 'vue'
-import { lock } from '../../main'
 
 const state = {
   authenticated: false,
@@ -52,11 +51,8 @@ const actions = {
   updateProfile: (context) => {
     /* user profile */
     if (context.getters.authenticated) {
-      lock.getUserInfo(localStorage.getItem('access_token'), (error, profile) => {
-        if (error) {
-          return
-        }
-        context.commit('setProfile', profile)
+      Vue.axios.get('/1/secured/user/myProfile').then((response) => {
+        context.commit('setProfile', response.data)
       })
 
       /* accounts data */

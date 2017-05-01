@@ -16,7 +16,8 @@ public class Edition {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
-	private String creatorId;
+	@ManyToOne
+	private AppUser creator;
 	@ManyToOne
 	private Proposal proposal;
 	@ManyToOne
@@ -29,7 +30,7 @@ public class Edition {
 		EditionDto dto = new EditionDto();
 		
 		dto.setId(id);
-		dto.setCreatorId(creatorId);
+		dto.setCreatorId(creator.getId());
 		if(parent != null) dto.setParentId(parent.getId());
 		dto.setProposalId(proposal.getId());
 		dto.setText(text);
@@ -47,11 +48,11 @@ public class Edition {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public String getCreatorId() {
-		return creatorId;
+	public AppUser getCreator() {
+		return creator;
 	}
-	public void setCreatorId(String creatorId) {
-		this.creatorId = creatorId;
+	public void setCreator(AppUser creator) {
+		this.creator = creator;
 	}
 	public Proposal getProposal() {
 		return proposal;

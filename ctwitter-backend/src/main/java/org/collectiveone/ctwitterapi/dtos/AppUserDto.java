@@ -1,8 +1,9 @@
 package org.collectiveone.ctwitterapi.dtos;
 
-public class UserThumbnailDto {
+public class AppUserDto {
 	private Long id;
 	private String auth0Id;
+	private String email;
 	private String nickname;
 	private String picture;
 	
@@ -18,6 +19,12 @@ public class UserThumbnailDto {
 	public void setAuth0Id(String auth0Id) {
 		this.auth0Id = auth0Id;
 	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
 	public String getNickname() {
 		return nickname;
 	}
@@ -27,7 +34,7 @@ public class UserThumbnailDto {
 	public String getPicture() {
 		return picture;
 	}
-	public void setPicture(String profilePicUrl) {
-		this.picture = profilePicUrl;
+	public void setPicture(String picture) {
+		this.picture = picture;
 	}
 }

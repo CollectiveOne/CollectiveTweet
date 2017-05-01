@@ -6,8 +6,8 @@ import java.util.List;
 public class AccountDto {
 	Long id;
 	String twitterHandle;
-	String creatorId;
-	String creatorUsername;
+	Long creatorId;
+	String creatorNickname;
 	List<ProposalDto> proposals = new ArrayList<ProposalDto>();
 	
 	public Long getId() {
@@ -22,17 +22,17 @@ public class AccountDto {
 	public void setTwitterHandle(String twitterHandle) {
 		this.twitterHandle = twitterHandle;
 	}
-	public String getCreatorId() {
+	public Long getCreatorId() {
 		return creatorId;
 	}
-	public void setCreatorId(String creatorId) {
+	public void setCreatorId(Long creatorId) {
 		this.creatorId = creatorId;
 	}
-	public String getCreatorUsername() {
-		return creatorUsername;
+	public String getCreatorNickname() {
+		return creatorNickname;
 	}
-	public void setCreatorUsername(String creatorUsername) {
-		this.creatorUsername = creatorUsername;
+	public void setCreatorNickname(String creatorNickname) {
+		this.creatorNickname = creatorNickname;
 	}
 	public List<ProposalDto> getProposals() {
 		return proposals;

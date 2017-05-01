@@ -83,12 +83,13 @@ export default {
     },
 
     addUserSelected (user) {
-      console.log(user)
-      // this.axios.post('/1/secured/account/addUser', {
-      //   params: {
-      //     userId: user.userId
-      //   }
-      // })
+      this.axios.post('/1/secured/account/' + this.account.id + '/addMember', {}, {
+        params: {
+          userId: user.id
+        }
+      }).then((response) => {
+        console.log(response)
+      })
     },
 
     newProposalReceived (data) {

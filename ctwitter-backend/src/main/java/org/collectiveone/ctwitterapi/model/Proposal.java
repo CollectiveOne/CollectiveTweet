@@ -13,7 +13,8 @@ public class Proposal {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
-	private String creatorId;
+	@ManyToOne
+	private AppUser creator;
 	@ManyToOne
 	private Account account;
 	private String firstVersion; 
@@ -22,7 +23,7 @@ public class Proposal {
 		ProposalDto dto = new ProposalDto();
 		
 		dto.setId(id);
-		dto.setCreatorId(creatorId);
+		dto.setCreatorId(creator.getId());
 		dto.setFirstVersion(firstVersion);
 		dto.setAccountId(account.getId());
 		
@@ -35,11 +36,11 @@ public class Proposal {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public String getCreatorId() {
-		return creatorId;
+	public AppUser getCreator() {
+		return creator;
 	}
-	public void setCreatorId(String creatorId) {
-		this.creatorId = creatorId;
+	public void setCreator(AppUser creator) {
+		this.creator = creator;
 	}
 	public Account getAccount() {
 		return account;

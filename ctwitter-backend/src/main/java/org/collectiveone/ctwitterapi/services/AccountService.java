@@ -8,13 +8,13 @@ import javax.transaction.Transactional;
 import org.collectiveone.ctwitterapi.dtos.AccountDto;
 import org.collectiveone.ctwitterapi.dtos.UserThumbnailDto;
 import org.collectiveone.ctwitterapi.model.Account;
+import org.collectiveone.ctwitterapi.model.AppUser;
 import org.collectiveone.ctwitterapi.repositories.AccountRepositoryIf;
+import org.collectiveone.ctwitterapi.repositories.AppUserRepositoryIf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.auth0.client.mgmt.ManagementAPI;
-import com.auth0.exception.Auth0Exception;
-import com.auth0.json.mgmt.users.User;
 
 @Service
 public class AccountService {
@@ -25,14 +25,17 @@ public class AccountService {
 	@Autowired
     AccountRepositoryIf accountRepository;
 	
+	@Autowired
+	AppUserRepositoryIf appUserRepository;
+	
 	@Transactional
 	public AccountDto get(Long id) {
 		return accountRepository.findById(id).toDto();
 	}
 	
 	@Transactional
-	public List<AccountDto> getOfUser(String userid) {
-		List<Account> accounts = accountRepository.findByCreatorId(userid);
+	public List<AccountDto> getOfUser(String userAuth0Id) {
+		List<Account> accounts = accountRepository.findByCreatorAuth0Id(userAuth0Id);
 		
 		List<AccountDto> accountsDtos = new ArrayList<AccountDto>();
 		for(Account account : accounts) {
@@ -47,25 +50,34 @@ public class AccountService {
 		Account account = accountRepository.findById(accountId);
 		
 		List<UserThumbnailDto> userThumbnails = new ArrayList<UserThumbnailDto>();
-		for(String memberId : account.getMembersIds()) {
+		for(AppUser member : account.getMembers()) {
 			
-			User user = null;
-			try {
-				user = mgmt.users().get(memberId, null).execute();
-				
-				UserThumbnailDto userThumbnail = new UserThumbnailDto();
-				userThumbnail.setId(user.getId());
-				userThumbnail.setNickname(user.getNickname());
-				userThumbnail.setPicture(user.getPicture());
-				
-				userThumbnails.add(userThumbnail);
-				
-			} catch (Auth0Exception e) {
-				e.printStackTrace();
-			}
+			UserThumbnailDto userThumbnail = new UserThumbnailDto();
+			userThumbnail.setId(member.getId());
+			userThumbnail.setAuth0Id(member.getAuth0Id());
+			userThumbnail.setNickname(member.getNickname());
+			userThumbnail.setPicture(member.getPicture());
+			
+			userThumbnails.add(userThumbnail);
 			
 		}
 		
 		return userThumbnails;
+	}
+	
+	@Transactional
+	public String addMember(Long accountId, Long userId) {
+		Account account = accountRepository.findById(accountId);
+		AppUser user = appUserRepository.findById(userId);
+		
+		/* check user is not already a member */
+		AppUser member = accountRepository.findMember(accountId, userId);
+		if(member == null) {
+			account.getMembers().add(user);
+			accountRepository.save(account);
+			return "success";
+		} else {
+			return "user already a member";
+		}
 	}
 }

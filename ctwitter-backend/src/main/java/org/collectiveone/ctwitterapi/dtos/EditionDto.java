@@ -2,7 +2,7 @@ package org.collectiveone.ctwitterapi.dtos;
 
 public class EditionDto {
 	private Long id;
-	private String creatorId;
+	private Long creatorId;
 	private Long proposalId;
 	private Long parentId;
 	private String text;
@@ -15,10 +15,10 @@ public class EditionDto {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public String getCreatorId() {
+	public Long getCreatorId() {
 		return creatorId;
 	}
-	public void setCreatorId(String creatorId) {
+	public void setCreatorId(Long creatorId) {
 		this.creatorId = creatorId;
 	}
 	public Long getProposalId() {

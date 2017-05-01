@@ -4,7 +4,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.collectiveone.ctwitterapi.model.Account;
 import org.collectiveone.ctwitterapi.model.AccountState;
+import org.collectiveone.ctwitterapi.model.AppUser;
 import org.collectiveone.ctwitterapi.repositories.AccountRepositoryIf;
+import org.collectiveone.ctwitterapi.services.AppUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -33,6 +35,9 @@ public class TwitterAuthorization {
     String consumerSecret;
     
     @Autowired
+    AppUserService appUserService;
+    
+    @Autowired
     AccountRepositoryIf accountRepository;
 
     
@@ -55,13 +60,15 @@ public class TwitterAuthorization {
         
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		
+        AppUser creator = appUserService.get(auth.getName());
+        
         Account account = new Account();
-        account.setCreatorId(auth.getName());
+        account.setCreator(creator);
         account.setState(AccountState.PENDINGAUTHORIZATION);
         account.setRequestToken(requestToken.getValue());
         account.setRequestTokenSecret(requestToken.getSecret());
 
-        account.getMembersIds().add(auth.getName());
+        account.getMembers().add(creator);
         
         accountRepository.save(account);
         

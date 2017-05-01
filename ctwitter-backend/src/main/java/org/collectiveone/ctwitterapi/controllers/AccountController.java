@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -53,6 +54,11 @@ public class AccountController {
     @RequestMapping(path = "/{id}/members",  method = RequestMethod.GET)
     public List<UserThumbnailDto> getMembers(@PathVariable("id") Long id) {
     	return accountService.getMembers(id);
+    }
+    
+    @RequestMapping(path = "/{id}/addMember",  method = RequestMethod.POST)
+    public String addMember(@PathVariable("id") Long accountId, @RequestParam("userId") Long userId) {
+    	return accountService.addMember(accountId,userId);
     }
     
 	@RequestMapping(path = "{id}/tweet", method = RequestMethod.POST, produces = { MediaType.TEXT_HTML_VALUE })

@@ -8,11 +8,13 @@ import org.collectiveone.ctwitterapi.dtos.EditionDto;
 import org.collectiveone.ctwitterapi.dtos.ProposalDto;
 import org.collectiveone.ctwitterapi.dtos.TweetDto;
 import org.collectiveone.ctwitterapi.model.Account;
+import org.collectiveone.ctwitterapi.model.AppUser;
 import org.collectiveone.ctwitterapi.model.Edition;
 import org.collectiveone.ctwitterapi.model.EditionRank;
 import org.collectiveone.ctwitterapi.model.EditionRankType;
 import org.collectiveone.ctwitterapi.model.Proposal;
 import org.collectiveone.ctwitterapi.repositories.AccountRepositoryIf;
+import org.collectiveone.ctwitterapi.repositories.AppUserRepositoryIf;
 import org.collectiveone.ctwitterapi.repositories.EditionRankRepositoryIf;
 import org.collectiveone.ctwitterapi.repositories.EditionRepositoryIf;
 import org.collectiveone.ctwitterapi.repositories.ProposalRepositoryIf;
@@ -34,18 +36,22 @@ public class ProposalService {
 	@Autowired
 	EditionRankRepositoryIf editionRankRepository;
 	
+	@Autowired
+	AppUserRepositoryIf appUserRepository;
+	
 	@Transactional
-	public String create(String userId, Long accountId, TweetDto tweetDto) {
+	public String create(String userAuth0Id, Long accountId, TweetDto tweetDto) {
 		Proposal proposal = new Proposal();
     	Edition edition = new Edition();
+    	AppUser creator = appUserRepository.findByAuth0Id(userAuth0Id);
     	
     	Account account = accountRepository.findById(accountId);
     	
-    	proposal.setCreatorId(userId);
+    	proposal.setCreator(creator);
     	proposal.setAccount(account);
     	proposal.setFirstVersion(tweetDto.getText());
     	
-    	edition.setCreatorId(userId);
+    	edition.setCreator(creator);
     	edition.setProposal(proposal);
     	edition.setText(tweetDto.getText());
     	
@@ -84,12 +90,13 @@ public class ProposalService {
 	}
 	
 	@Transactional
-	public String addEdition(String userId, Long proposalId, Long parentId, TweetDto tweetDto) {
+	public String addEdition(String userAuth0Id, Long proposalId, Long parentId, TweetDto tweetDto) {
 		Proposal proposal = proposalRepository.findById(proposalId);
 
 		Edition edition = new Edition();
+		AppUser creator = appUserRepository.findByAuth0Id(userAuth0Id);
     	
-    	edition.setCreatorId(userId);
+    	edition.setCreator(creator);
     	edition.setProposal(proposal);
     	edition.setText(tweetDto.getText());
     	
